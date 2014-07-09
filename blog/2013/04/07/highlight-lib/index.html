@@ -1,0 +1,611 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>チュートリアルを実現するjQueryプラグイン達 - ぽっちぽちにしてやんよ</title>
+  <meta name="author" content="pchw">
+
+  
+  <meta name="description" content="最近チュートリアルを実現したり，特定の要素をハイライトしたり，用途的に似たようなライブラリがぽこぽこ出てきてどれがいいのか試したのでまとめてみる． Chardin http://heelhook.github.com/chardin.js/ Apache License v2.0 概要 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pchw.github.io/blog/2013/04/07/highlight-lib/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ぽっちぽちにしてやんよ" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-13219359-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ぽっちぽちにしてやんよ</a></h1>
+  
+    <h2>技術ネタとかアプリに関する話とか</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pchw.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">チュートリアルを実現するjQueryプラグイン達</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-07T17:14:00+00:00" pubdate data-updated="true">Apr 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>最近チュートリアルを実現したり，特定の要素をハイライトしたり，用途的に似たようなライブラリがぽこぽこ出てきてどれがいいのか試したのでまとめてみる．</p>
+
+<h1>Chardin</h1>
+
+<p><img src="/images/chardin.png" alt="chardin" /></p>
+
+<!--more-->
+
+
+<p>http://heelhook.github.com/chardin.js/</p>
+
+<p>Apache License v2.0</p>
+
+<h2>概要</h2>
+
+<p>一度に複数の要素に対して，説明を書ける．</p>
+
+<p>ステップで実行などはないが，completion handlerで再度実行すればできる．</p>
+
+<p>Gmailの新機能で使われたチュートリアル風味．</p>
+
+<p>実現方法はbody直下に黒半透明オーバーレイ要素を重ね，その後ろに説明用のレイヤーを追加する．ハイライトする要素をオーバーレイより大きいz-indexを追加し，上に持ってくる．</p>
+
+<p>ハイライトする要素にz-indexがinline styleで付いていると隠れてしまう．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;head&gt;
+</span><span class='line'>  :
+</span><span class='line'>  &lt;link href="/stylesheets/chardinjs.css" rel="stylesheet" /&gt;
+</span><span class='line'>  :
+</span><span class='line'>&lt;/head&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>js追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript" src="chardinjs.min.js"&gt;&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>data-intro</code>をハイライトする要素の属性に追加．
+<code>data-position</code>に<code>left</code>・<code>top</code>・<code>right</code>・<code>bottom</code>のどれかを指定（説明文が出る位置）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;h1 data-step="1" data-intro="Hello all! :) This project's called Intro.js." class=""&gt;Intro&lt;span style="font-weight: normal;"&gt;.js&lt;/span&gt;&lt;/h1&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ロード時に実行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript"&gt;
+</span><span class='line'>  $(function(){
+</span><span class='line'>    $('body').chardinJs('start');
+</span><span class='line'>  })
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ハイライト開始時と終了時のイベントを受け取れる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript"&gt;
+</span><span class='line'>  $(function(){
+</span><span class='line'>    $('body').on('chardinJs:stop', function() {
+</span><span class='line'>      // 完了時の処理
+</span><span class='line'>    });
+</span><span class='line'>    $('body').chardinJs('start');
+</span><span class='line'>  })
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>jQuery Highlighter</h1>
+
+<p><img src="/images/jhighlighter.png" alt="jhighlighter" /></p>
+
+<p>http://www.dailymarkup.com/</p>
+
+<p>MIT</p>
+
+<h2>概要</h2>
+
+<p>白いBoxshadowをつけてて、要素が光ってるようなハイライトができてかっこいい。</p>
+
+<p>ハイライトしたい要素をcloneして、オーバーレイの上にコピペして実現．</p>
+
+<p>指定した要素だけをcloneして，上に重ねるため，cssの書き方によっては（親要素を指定しているなど）デザインが崩れる．</p>
+
+<p>アルファ版らしく，本番運用非推奨．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;head&gt;
+</span><span class='line'>  :
+</span><span class='line'>  &lt;link href="/stylesheets/jquery.highlighter.css" rel="stylesheet" type="text/css"/&gt; 
+</span><span class='line'>  :
+</span><span class='line'>&lt;/head&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>js追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript" src="/js/jquery.highlighter.js"&gt;&lt;/script&gt; </span></code></pre></td></tr></table></div></figure>
+
+
+<p>コントローラにハイライトしたい要素のid（ここでは<code>menu</code>）を指定し，relにハイライト時に表示されるメッセージを指定する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;div id="menu"&gt;ハイライトしたい要素&lt;div/&gt;
+</span><span class='line'>:
+</span><span class='line'>&lt;a href="javascript:void(0);" title="menu" class="jhighlight" rel="&lt;h1&gt;HTML Markup for the Description&lt;/h1&gt;"&gt;1&lt;/a&gt; </span></code></pre></td></tr></table></div></figure>
+
+
+<p>ロード時に実行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript"&gt;
+</span><span class='line'>  $(function(){
+</span><span class='line'>    $('.jhighlight').jhighlight(); 
+</span><span class='line'>  })
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>jquery-tutor</h1>
+
+<p><img src="/images/jquery-tutor.png" alt="jquery-tutor" /></p>
+
+<p>https://github.com/crocos/jquery-tutor</p>
+
+<p>3-clause BSD license</p>
+
+<h2>概要</h2>
+
+<p>ステップ1、ステップ2のように流れに沿って要素をハイライトしたり，jsの処理を順次実行出来る．</p>
+
+<p>実現方法は要素の周りに太い半透明borderを重ねて実現．</p>
+
+<p>borderで実現しているのが影響してか見た目が良くない．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;head&gt;
+</span><span class='line'>  :
+</span><span class='line'>  &lt;link rel="stylesheet" type="text/css" href="/stylesheets/jquery.tutor.min.css"&gt;
+</span><span class='line'>  :
+</span><span class='line'>&lt;/head&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>js追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script src="/js/jquery.tutor.min.js"&gt;&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>stepsの配列に順次ハイライトしたい要素とメッセージのオブジェクト(target, message)やjsのfunctionをそのまま入れたりしていく．
+deferredを使うと非同期実行などもできる．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript"&gt;
+</span><span class='line'>  $(function(){
+</span><span class='line'>    $.tutor({
+</span><span class='line'>      steps:[
+</span><span class='line'>      {
+</span><span class='line'>        target: '.selector',
+</span><span class='line'>        message: 'Step 1: Push the button.'
+</span><span class='line'>      },
+</span><span class='line'>      function() {
+</span><span class='line'>        alert('Step 2: Click "OK"');
+</span><span class='line'>      },
+</span><span class='line'>      function(dfd) {
+</span><span class='line'>        // async callback
+</span><span class='line'>        setTimeout(function() {
+</span><span class='line'>          alert('Step 3: Hi.')
+</span><span class='line'>        }, 1500);
+</span><span class='line'>
+</span><span class='line'>        return dfd.promise();
+</span><span class='line'>      },
+</span><span class='line'>      function() {
+</span><span class='line'>        // `$.ajax` returns *Deferred Object*.
+</span><span class='line'>        return $.ajax({
+</span><span class='line'>          // ...
+</span><span class='line'>        });
+</span><span class='line'>      },
+</span><span class='line'>      {
+</span><span class='line'>        target: '.selector',
+</span><span class='line'>        message: 'That\'s all. Enjoy!'
+</span><span class='line'>      }
+</span><span class='line'>    ]
+</span><span class='line'>    });
+</span><span class='line'>  })
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Introjs</h1>
+
+<p><img src="/images/introjs.png" alt="introjs" /></p>
+
+<p>http://usablica.github.io/intro.js/</p>
+
+<p>MIT</p>
+
+<h2>概要</h2>
+
+<p>角丸四角でハイライトされて，ステップ数のバッヂや次のステップへ進む，前のステップへ戻るボタンなどが表示されて親切な感じ</p>
+
+<p>黒半透明のオーバーレイ要素を対象要素の後ろにz-index高めで追加して対象の要素に<code>.introjs-showElement</code>を付けてz-indexをオーバーレイ要素より高めてハイライトする形式．
+inline styleでz-indexを追加していると後ろに隠れてしまってハイライト要素が見えないという状態になる．
+画面端の要素をハイライトすると，バッヂが隠れてしまったりもする．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;head&gt;
+</span><span class='line'>  :
+</span><span class='line'>  &lt;link href="/stylesheets/introjs.min.css" rel="stylesheet" /&gt;
+</span><span class='line'>  :
+</span><span class='line'>&lt;/head&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>js追加</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript" src="/js/intro.min.js"&gt;&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>data-step</code>と<code>data-intro</code>をハイライトする要素の属性に追加．
+<code>data-position</code>は指定したければ指定する．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;h1 data-step="1" data-intro="Hello all! :) This project's called Intro.js." class=""&gt;Intro&lt;span style="font-weight: normal;"&gt;.js&lt;/span&gt;&lt;/h1&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ロード時に実行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script type="text/javascript"&gt;
+</span><span class='line'>  $(function(){
+</span><span class='line'>    introJs().start();
+</span><span class='line'>  })
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ステップ移行時や完了，離脱時のcallbackを設定できる．</p>
+
+<h1>まとめ</h1>
+
+<p>見た目的にはchardinやintro.jsが良い感じ．</p>
+
+<p>チュートリアル的に使うならintro.jsかな．</p>
+
+<p>1枚画面でさっと機能を提示したいだけならchardinが良いのではないか．</p>
+
+<p>この種のライブラリは複雑な構成（z-indexをjsでinline styleとして書き換えたり，absoluteやfixedで配置をダイナミックにしているなど）を取ってると微妙に要素が隠れたり，ハイライトがずれたりするので注意が必要．</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">pchw</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-07T17:14:00+00:00" pubdate data-updated="true">Apr 7<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jquery/'>jquery</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://pchw.github.io/blog/2013/04/07/highlight-lib/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pchw.github.io/blog/2013/04/07/highlight-lib/" data-via="pchw" data-counturl="http://pchw.github.io/blog/2013/04/07/highlight-lib/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/08/06/fontawesome/" title="Previous Post: [RubyMotion] motion-fontawesomeっていうgems作りました">&laquo; [RubyMotion] motion-fontawesomeっていうgems作りました</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/06/27/octopress-travis/" title="Next Post: OctopressとTravis CIを連携させてBlog生成を自動にする">OctopressとTravis CIを連携させてBlog生成を自動にする &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p><img src="/images/pMac.png"/></p>
+  <p>ぽち</p>
+  <p>iPhoneアプリとかWebサービスとか作ってます．</p>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pchw", 0, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pchw" class="twitter-follow-button" data-show-count="false">Follow @pchw</a>
+  
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/voicetext/">VoiceText Web APIのNode.jsライブラリ作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/04/synth-routing/">[Synth] ルーティングを増やしてみる</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/28/synth-with-vuejs/">[Synth] SynthとVue.jsを組み合わせてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/synth/">[Synth] Synthを試してみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/11/power-assert/">coffee-scriptでpower-assertを使ったテストを書く</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/app'>App (1)</a></li><li><a href='/blog/categories/appstore'>AppStore (1)</a></li><li><a href='/blog/categories/backbone-js'>backbone.js (1)</a></li><li><a href='/blog/categories/backbone-js'>Backbone.js (1)</a></li><li><a href='/blog/categories/github'>github (1)</a></li><li><a href='/blog/categories/github'>GitHub (1)</a></li><li><a href='/blog/categories/hub'>hub (1)</a></li><li><a href='/blog/categories/ios7'>iOS7 (1)</a></li><li><a href='/blog/categories/iphone'>iPhone (1)</a></li><li><a href='/blog/categories/jquery'>jquery (1)</a></li><li><a href='/blog/categories/mongodb'>mongodb (1)</a></li><li><a href='/blog/categories/octopress'>octopress (1)</a></li><li><a href='/blog/categories/power-assert'>power-assert (1)</a></li><li><a href='/blog/categories/rubymotion'>RubyMotion (27)</a></li><li><a href='/blog/categories/sublimetext2'>SublimeText2 (2)</a></li><li><a href='/blog/categories/synth'>synth (3)</a></li><li><a href='/blog/categories/voicetext'>voicetext (1)</a></li><li><a href='/blog/categories/vue-js'>Vue.js (2)</a></li></ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - pchw -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pchw';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pchw.github.io/blog/2013/04/07/highlight-lib/';
+        var disqus_url = 'http://pchw.github.io/blog/2013/04/07/highlight-lib/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

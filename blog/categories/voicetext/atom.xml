@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: voicetext | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/voicetext/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[VoiceText Web APIのNode.jsライブラリ作った]]></title>
+    <link href="http://pchw.github.io/blog/2014/07/10/voicetext/"/>
+    <updated>2014-07-10T09:00:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2014/07/10/voicetext</id>
+    <content type="html"><![CDATA[<p>GitHub: <a href="https://github.com/pchw/node-voicetext">https://github.com/pchw/node-voicetext</a></p>
+
+<p>npm: <a href="https://www.npmjs.org/package/voicetext">https://www.npmjs.org/package/voicetext</a></p>
+
+<h1>前説</h1>
+
+<p>HOYAの<a href="https://cloud.voicetext.jp/webapi">VoiceText Web API</a>というのが公開されていたのでNode.jsから叩くライブラリを作った．</p>
+
+<p>VoiceText Web API(β版)は<a href="http://dic.nicovideo.jp/a/%E3%82%B7%E3%83%A7%E3%82%A6%E5%90%9B">ショウ君</a>で有名な<a href="http://voicetext.jp/">VoiceText</a>がスタンドアロンのソフトじゃなくてWebで公開されたやつ．</p>
+
+<p>しかも今のところ無償で利用出来る．</p>
+
+<p>Voice Text Web API自体はHTTPSのPOSTでデータを投げつけたらwavファイルを送り返してくるゴキゲンなやつ．</p>
+
+<h1>はじめにやること</h1>
+
+<p>VoiceText Web APIを使うには，まず利用登録が必要．
+<a href="https://cloud.voicetext.jp/webapi/api_keys/new">利用登録画面</a> から<code>名前``メールアドレス</code>などその他入れて登録すればすぐAPIキーが書かれたメールが来る．</p>
+
+<h1>Node.jsからVoiceText Web APIを使う</h1>
+
+<p>おもむろにnpm installする
+<code>
+$ npm install voicetext
+</code></p>
+
+<p><code>require('voicetext')</code>したらVoiceTextクラスが返ってくるからnewしつつAPIキーをブチ込む
+<code>
+VoiceText = require('voicetext');
+voice = new VoiceText('APIキーをここにコピペする');
+</code></p>
+
+<p>あとは色々パラメータをいじりつつメソッドチェーンして<code>speak</code>する．
+基本的にメソッドは<a href="https://cloud.voicetext.jp/webapi/docs/api">公式ドキュメント</a>のパラメータに合わせるようにした．
+<code>
+voice
+.speaker(voice.SPEAKER.HIKARI)
+.emotion(voice.EMOTION.HAPPINESS)
+.emotion_level(voice.EMOTION_LEVEL.HIGH)
+.pitch(200)
+.speed(400)
+.volume(200)
+.speak('きょうもいちにちがんばるぞい', function(e, buf){
+})
+</code>
+コールバックの第二引数にwavが詰まったBufferインスタンスが返ってくるので，
+<code>fs.writeFile</code>とかしてwavに書き出せばもうすぐに再生できる形だ！</p>
+
+<p>たぶん<a href="https://github.com/TooTallNate/node-wav">node-wav</a>とか使ったらそのまま再生出来るかも．</p>
+
+<p>というわけでNode.js版のVoiceTextライブラリのリポジトリは<a href="https://github.com/pchw/node-voicetext">https://github.com/pchw/node-voicetext</a></p>
+
+<p>chatopsなところはBOTとかに喋らせるといいんじゃないかな．</p>
+]]></content>
+  </entry>
+  
+</feed>

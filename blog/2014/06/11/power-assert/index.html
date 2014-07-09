@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>coffee-scriptでpower-assertを使ったテストを書く - ぽっちぽちにしてやんよ</title>
+  <meta name="author" content="pchw">
+
+  
+  <meta name="description" content="tl;dr @t_wadaさん神
+coffee-scriptでpower-assert使うときはespower-coffeeを使おう あらすじ ちょっと前に話題になっていたpower-assertを使ってみようとしました． こんな感じのを用意しました． 1
+2
+3
+4
+5
+6
+7
+8
+9
+10 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pchw.github.io/blog/2014/06/11/power-assert/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ぽっちぽちにしてやんよ" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-13219359-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ぽっちぽちにしてやんよ</a></h1>
+  
+    <h2>技術ネタとかアプリに関する話とか</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pchw.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Coffee-scriptでpower-assertを使ったテストを書く</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-11T00:20:00+00:00" pubdate data-updated="true">Jun 11<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>tl;dr</h2>
+
+<ol>
+<li>@t_wadaさん神</li>
+<li>coffee-scriptで<a href="https://github.com/twada/power-assert">power-assert</a>使うときは<a href="https://github.com/twada/espower-coffee">espower-coffee</a>を使おう</li>
+</ol>
+
+
+<h2>あらすじ</h2>
+
+<p>ちょっと前に話題になっていた<a href="https://github.com/twada/power-assert">power-assert</a>を使ってみようとしました．</p>
+
+<p>こんな感じのを用意しました．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>assert = require 'power-assert'
+</span><span class='line'>
+</span><span class='line'>describe 'array', -&gt;
+</span><span class='line'>  beforeEach -&gt;
+</span><span class='line'>    @arr = [1,2,3]
+</span><span class='line'>  describe '#indexOf()', -&gt;
+</span><span class='line'>    it 'should return index when the value is present', -&gt;
+</span><span class='line'>      zero = 0
+</span><span class='line'>      two = 2
+</span><span class='line'>      assert(@arr.indexOf(zero) is two)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>んで</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mocha --require intelli-espower-loader test/power-assert.coffee</span></code></pre></td></tr></table></div></figure>
+
+
+<p>みたいに実行したら</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  array
+</span><span class='line'>    #indexOf()
+</span><span class='line'>      1) should return index when the value is present
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  0 passing (4ms)
+</span><span class='line'>  1 failing
+</span><span class='line'>
+</span><span class='line'>  1) array #indexOf() should return index when the value is present:
+</span><span class='line'>     AssertionError: false == true</span></code></pre></td></tr></table></div></figure>
+
+
+<p>あれ，，，ログがショボい，，，</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  array
+</span><span class='line'>    #indexOf()
+</span><span class='line'>      1) should return index when the value is present
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  0 passing (10ms)
+</span><span class='line'>  1 failing
+</span><span class='line'>
+</span><span class='line'>  1) array #indexOf() should return index when the value is present:
+</span><span class='line'>     AssertionError: # /Users/pochi/Documents/development/(snip)/test/power-assert.js:16
+</span><span class='line'>
+</span><span class='line'>assert(this.arr.indexOf(zero) === two)
+</span><span class='line'>            |   |       |     |   |   
+</span><span class='line'>            |   |       |     |   2   
+</span><span class='line'>            |   -1      0     false   
+</span><span class='line'>            [1,2,3]                   
+</span><span class='line'>
+</span><span class='line'>[number] two
+</span><span class='line'>=&gt; 2
+</span><span class='line'>[number] this.arr.indexOf(zero)
+</span><span class='line'>=&gt; -1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんな感じのを期待したのに！！</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>power-assert使ってみたのに思ったように出力でない．「AssertionError: false == true」って出てしまった</p>&mdash; ぽち＠ (@pchw) <a href="https://twitter.com/pchw/statuses/475911097069744130">June 9, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>とか言ってたら<a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a>が色々助言をくれて，こうなって</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> intelli-espower-loaderへのpull request案件な気がしてきましたね。 <a href="https://t.co/F5tHM0NDqh">https://t.co/F5tHM0NDqh</a></p>&mdash; Yosuke FURUKAWA (@yosuke_furukawa) <a href="https://twitter.com/yosuke_furukawa/statuses/475914266860482560">June 9, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>さらに中をみていくと</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>いや待てよこれ*.coffeeにしてもならないぞ，，，espower-loaderの中の方まで見ていかないと</p>&mdash; ぽち＠ (@pchw) <a href="https://twitter.com/pchw/statuses/475914928562266112">June 9, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>さらに色々調べてたら数カ月前の@mizchiの発言が</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>昨日power-asset 使おうとしてみたけど coffeeと espower が上手く動かんかった</p>&mdash; 俺は平気だよ (@mizchi) <a href="https://twitter.com/mizchi/statuses/468274394368708608">May 19, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>という感じで動作しない感じでした．</p>
+
+<p>TypeScriptでの前例があるように</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> なるほど。。vvakameさんがtypescriptでどうやってやってんだろーと思って中身見たらgrunt-espower使ってたのでそういうことですね。 <a href="https://t.co/mFYljl9QRw">https://t.co/mFYljl9QRw</a></p>&mdash; Yosuke FURUKAWA (@yosuke_furukawa) <a href="https://twitter.com/yosuke_furukawa/statuses/475915916807376896">June 9, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>のようにgruntを使ってjsにコンパイルしてそれを食わせるという方法しか無いように思えた時に @t_wada 降臨．</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> <a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a> 反応遅れてすみません。 CoffeeScript で power-assert 使いたい人意外といらっしゃるみたいですね……Node のローダーではちょっと向かい風ですが、手を考えます <a href="https://t.co/P1WY2nV1fz">https://t.co/P1WY2nV1fz</a></p>&mdash; Takuto Wada (@t_wada) <a href="https://twitter.com/t_wada/statuses/475935334874636288">June 9, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>そしてその翌日</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> <a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a> espower-coffee を作ってみたので試してみてください <a href="https://t.co/U8NM7Eji9k">https://t.co/U8NM7Eji9k</a></p>&mdash; Takuto Wada (@t_wada) <a href="https://twitter.com/t_wada/statuses/476235243221835776">June 10, 2014</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p><a href="https://github.com/twada/espower-coffee">espower-coffee</a> が公開されてました！</p>
+
+<h2>使い方</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install espower-coffee --save-dev
+</span><span class='line'>$ mocha --require 'espower-coffee/guess' test/**/*.coffee</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>grunt-mocha-test</code>を使っているなら</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mochaTest:
+</span><span class='line'>    options:
+</span><span class='line'>      reporter: 'spec'
+</span><span class='line'>      require: 'espower-coffee/guess'
+</span><span class='line'>      colors: true
+</span><span class='line'>      timeout: 10000
+</span><span class='line'>    src: [
+</span><span class='line'>      'test/power-assert.coffee'
+</span><span class='line'>      ] </span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんな感じ．<code>compilers: 'coffee:coffee-script'</code>は要らないみたいです．</p>
+
+<p>すると</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  array
+</span><span class='line'>    #indexOf()
+</span><span class='line'>      1) should return index when the value is present
+</span><span class='line'> 
+</span><span class='line'> 
+</span><span class='line'>  0 passing (10ms)
+</span><span class='line'>  1 failing
+</span><span class='line'> 
+</span><span class='line'>  1) array #indexOf() should return index when the value is present:
+</span><span class='line'>     AssertionError: # /Users/pochi/Documents/development/(snip)/test/power-assert.coffee:15
+</span><span class='line'> 
+</span><span class='line'>assert(this.arr.indexOf(zero) === two)
+</span><span class='line'>            |   |       |     |   |   
+</span><span class='line'>            |   |       |     |   2   
+</span><span class='line'>            |   -1      0     false   
+</span><span class='line'>            [1,2,3]                   
+</span><span class='line'> 
+</span><span class='line'>[number] two
+</span><span class='line'>=&gt; 2
+</span><span class='line'>[number] this.arr.indexOf(zero)
+</span><span class='line'>=&gt; -1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんなのが得られて，coffee-scriptでpower-assertが使えました！</p>
+
+<p>ちなみに他のファイルとかは<a href="https://gist.github.com/pchw/3fbed13bd69fb31faca6">こんな感じ</a>でやりました．</p>
+
+<h2>注意点</h2>
+
+<ul>
+<li>coffee-scriptは1.7.1以上を要求します</li>
+<li>coffee-errorsなどを併用するとショボいログに戻ります</li>
+<li>AssertionErrorの行数が実際の.coffeeの行数ではありません．（多段SourceMap対応するまでは仕様とのこと）</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">pchw</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-11T00:20:00+00:00" pubdate data-updated="true">Jun 11<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/power-assert/'>power-assert</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://pchw.github.io/blog/2014/06/11/power-assert/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pchw.github.io/blog/2014/06/11/power-assert/" data-via="pchw" data-counturl="http://pchw.github.io/blog/2014/06/11/power-assert/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/04/backbone-view/" title="Previous Post: Backbone.jsでView.renderを書く場合のセオリー">&laquo; Backbone.jsでView.renderを書く場合のセオリー</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/27/synth/" title="Next Post: [Synth] Synthを試してみた">[Synth] Synthを試してみた &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p><img src="/images/pMac.png"/></p>
+  <p>ぽち</p>
+  <p>iPhoneアプリとかWebサービスとか作ってます．</p>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pchw", 0, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pchw" class="twitter-follow-button" data-show-count="false">Follow @pchw</a>
+  
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/voicetext/">VoiceText Web APIのNode.jsライブラリ作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/04/synth-routing/">[Synth] ルーティングを増やしてみる</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/28/synth-with-vuejs/">[Synth] SynthとVue.jsを組み合わせてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/synth/">[Synth] Synthを試してみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/11/power-assert/">coffee-scriptでpower-assertを使ったテストを書く</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/app'>App (1)</a></li><li><a href='/blog/categories/appstore'>AppStore (1)</a></li><li><a href='/blog/categories/backbone-js'>backbone.js (1)</a></li><li><a href='/blog/categories/backbone-js'>Backbone.js (1)</a></li><li><a href='/blog/categories/github'>github (1)</a></li><li><a href='/blog/categories/github'>GitHub (1)</a></li><li><a href='/blog/categories/hub'>hub (1)</a></li><li><a href='/blog/categories/ios7'>iOS7 (1)</a></li><li><a href='/blog/categories/iphone'>iPhone (1)</a></li><li><a href='/blog/categories/jquery'>jquery (1)</a></li><li><a href='/blog/categories/mongodb'>mongodb (1)</a></li><li><a href='/blog/categories/octopress'>octopress (1)</a></li><li><a href='/blog/categories/power-assert'>power-assert (1)</a></li><li><a href='/blog/categories/rubymotion'>RubyMotion (27)</a></li><li><a href='/blog/categories/sublimetext2'>SublimeText2 (2)</a></li><li><a href='/blog/categories/synth'>synth (3)</a></li><li><a href='/blog/categories/voicetext'>voicetext (1)</a></li><li><a href='/blog/categories/vue-js'>Vue.js (2)</a></li></ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - pchw -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pchw';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pchw.github.io/blog/2014/06/11/power-assert/';
+        var disqus_url = 'http://pchw.github.io/blog/2014/06/11/power-assert/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

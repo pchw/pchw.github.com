@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: jquery | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/jquery/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[チュートリアルを実現するjQueryプラグイン達]]></title>
+    <link href="http://pchw.github.io/blog/2013/04/07/highlight-lib/"/>
+    <updated>2013-04-07T17:14:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/04/07/highlight-lib</id>
+    <content type="html"><![CDATA[<p>最近チュートリアルを実現したり，特定の要素をハイライトしたり，用途的に似たようなライブラリがぽこぽこ出てきてどれがいいのか試したのでまとめてみる．</p>
+
+<h1>Chardin</h1>
+
+<p><img src="/images/chardin.png" alt="chardin" /></p>
+
+<!--more-->
+
+
+<p>http://heelhook.github.com/chardin.js/</p>
+
+<p>Apache License v2.0</p>
+
+<h2>概要</h2>
+
+<p>一度に複数の要素に対して，説明を書ける．</p>
+
+<p>ステップで実行などはないが，completion handlerで再度実行すればできる．</p>
+
+<p>Gmailの新機能で使われたチュートリアル風味．</p>
+
+<p>実現方法はbody直下に黒半透明オーバーレイ要素を重ね，その後ろに説明用のレイヤーを追加する．ハイライトする要素をオーバーレイより大きいz-indexを追加し，上に持ってくる．</p>
+
+<p>ハイライトする要素にz-indexがinline styleで付いていると隠れてしまう．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加
+<code>
+&lt;head&gt;
+  :
+  &lt;link href="http://pchw.github.io/stylesheets/chardinjs.css" rel="stylesheet" /&gt;
+  :
+&lt;/head&gt;
+</code></p>
+
+<p>js追加
+```</p>
+
+<script type="text/javascript" src="chardinjs.min.js"></script>
+
+
+<pre><code>
+`data-intro`をハイライトする要素の属性に追加．
+`data-position`に`left`・`top`・`right`・`bottom`のどれかを指定（説明文が出る位置）
+</code></pre>
+
+<h1 data-step="1" data-intro="Hello all! :) This project's called Intro.js." class="">Intro<span style="font-weight: normal;">.js</span></h1>
+
+
+<pre><code>
+ロード時に実行
+</code></pre>
+
+<script type="text/javascript">
+  $(function(){
+    $('body').chardinJs('start');
+  })
+</script>
+
+
+<pre><code>
+ハイライト開始時と終了時のイベントを受け取れる
+</code></pre>
+
+<script type="text/javascript">
+  $(function(){
+    $('body').on('chardinJs:stop', function() {
+      // 完了時の処理
+    });
+    $('body').chardinJs('start');
+  })
+</script>
+
+
+<pre><code>
+
+
+# jQuery Highlighter
+
+![jhighlighter](/images/jhighlighter.png)
+
+http://www.dailymarkup.com/
+
+MIT
+
+## 概要
+白いBoxshadowをつけてて、要素が光ってるようなハイライトができてかっこいい。
+
+ハイライトしたい要素をcloneして、オーバーレイの上にコピペして実現．
+
+指定した要素だけをcloneして，上に重ねるため，cssの書き方によっては（親要素を指定しているなど）デザインが崩れる．
+
+アルファ版らしく，本番運用非推奨．
+
+## 導入方法
+css追加
+</code></pre>
+
+<p><head>
+  :
+  <link href="http://pchw.github.io/stylesheets/jquery.highlighter.css" rel="stylesheet" type="text/css"/>
+  :
+</head>
+```</p>
+
+<p>js追加
+```</p>
+
+<script type="text/javascript" src="http://pchw.github.io/js/jquery.highlighter.js"></script>
+
+
+<p>
+```</p>
+
+<p>コントローラにハイライトしたい要素のid（ここでは<code>menu</code>）を指定し，relにハイライト時に表示されるメッセージを指定する
+```</p>
+
+<p><div id="menu">ハイライトしたい要素<div/>
+:
+<a href="javascript:void(0);" title="menu" class="jhighlight" rel="<h1>HTML Markup for the Description</h1>">1</a>
+```</p>
+
+<p>ロード時に実行
+<code>
+&lt;script type="text/javascript"&gt;
+  $(function(){
+    $('.jhighlight').jhighlight();
+  })
+&lt;/script&gt;
+</code></p>
+
+<h1>jquery-tutor</h1>
+
+<p><img src="/images/jquery-tutor.png" alt="jquery-tutor" /></p>
+
+<p>https://github.com/crocos/jquery-tutor</p>
+
+<p>3-clause BSD license</p>
+
+<h2>概要</h2>
+
+<p>ステップ1、ステップ2のように流れに沿って要素をハイライトしたり，jsの処理を順次実行出来る．</p>
+
+<p>実現方法は要素の周りに太い半透明borderを重ねて実現．</p>
+
+<p>borderで実現しているのが影響してか見た目が良くない．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加
+<code>
+&lt;head&gt;
+  :
+  &lt;link rel="stylesheet" type="text/css" href="http://pchw.github.io/stylesheets/jquery.tutor.min.css"&gt;
+  :
+&lt;/head&gt;
+</code></p>
+
+<p>js追加
+<code>
+&lt;script src="http://pchw.github.io/js/jquery.tutor.min.js"&gt;&lt;/script&gt;
+</code></p>
+
+<p>stepsの配列に順次ハイライトしたい要素とメッセージのオブジェクト(target, message)やjsのfunctionをそのまま入れたりしていく．
+deferredを使うと非同期実行などもできる．
+```
+<script type="text/javascript">
+  $(function(){
+    $.tutor({
+      steps:[
+      {
+        target: '.selector',
+        message: 'Step 1: Push the button.'
+      },
+      function() {
+        alert('Step 2: Click "OK"');
+      },
+      function(dfd) {
+        // async callback
+        setTimeout(function() {
+          alert('Step 3: Hi.')
+        }, 1500);</p>
+
+<pre><code>    return dfd.promise();
+  },
+  function() {
+    // `$.ajax` returns *Deferred Object*.
+    return $.ajax({
+      // ...
+    });
+  },
+  {
+    target: '.selector',
+    message: 'That\'s all. Enjoy!'
+  }
+]
+});
+</code></pre>
+
+<p>  })
+</script>
+```</p>
+
+<h1>Introjs</h1>
+
+<p><img src="/images/introjs.png" alt="introjs" /></p>
+
+<p>http://usablica.github.io/intro.js/</p>
+
+<p>MIT</p>
+
+<h2>概要</h2>
+
+<p>角丸四角でハイライトされて，ステップ数のバッヂや次のステップへ進む，前のステップへ戻るボタンなどが表示されて親切な感じ</p>
+
+<p>黒半透明のオーバーレイ要素を対象要素の後ろにz-index高めで追加して対象の要素に<code>.introjs-showElement</code>を付けてz-indexをオーバーレイ要素より高めてハイライトする形式．
+inline styleでz-indexを追加していると後ろに隠れてしまってハイライト要素が見えないという状態になる．
+画面端の要素をハイライトすると，バッヂが隠れてしまったりもする．</p>
+
+<h2>導入方法</h2>
+
+<p>css追加
+<code>
+&lt;head&gt;
+  :
+  &lt;link href="http://pchw.github.io/stylesheets/introjs.min.css" rel="stylesheet" /&gt;
+  :
+&lt;/head&gt;
+</code></p>
+
+<p>js追加
+<code>
+&lt;script type="text/javascript" src="http://pchw.github.io/js/intro.min.js"&gt;&lt;/script&gt;
+</code></p>
+
+<p><code>data-step</code>と<code>data-intro</code>をハイライトする要素の属性に追加．
+<code>data-position</code>は指定したければ指定する．
+<code>
+&lt;h1 data-step="1" data-intro="Hello all! :) This project's called Intro.js." class=""&gt;Intro&lt;span style="font-weight: normal;"&gt;.js&lt;/span&gt;&lt;/h1&gt;
+</code></p>
+
+<p>ロード時に実行
+<code>
+&lt;script type="text/javascript"&gt;
+  $(function(){
+    introJs().start();
+  })
+&lt;/script&gt;
+</code></p>
+
+<p>ステップ移行時や完了，離脱時のcallbackを設定できる．</p>
+
+<h1>まとめ</h1>
+
+<p>見た目的にはchardinやintro.jsが良い感じ．</p>
+
+<p>チュートリアル的に使うならintro.jsかな．</p>
+
+<p>1枚画面でさっと機能を提示したいだけならchardinが良いのではないか．</p>
+
+<p>この種のライブラリは複雑な構成（z-indexをjsでinline styleとして書き換えたり，absoluteやfixedで配置をダイナミックにしているなど）を取ってると微妙に要素が隠れたり，ハイライトがずれたりするので注意が必要．</p>
+]]></content>
+  </entry>
+  
+</feed>

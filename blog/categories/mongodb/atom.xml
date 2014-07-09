@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mongodb | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/mongodb/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MongoDBのShellを使いやすくする方法]]></title>
+    <link href="http://pchw.github.io/blog/2013/11/12/mongodb-shell/"/>
+    <updated>2013-11-12T07:49:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/11/12/mongodb-shell</id>
+    <content type="html"><![CDATA[<p>最近DBは<a href="http://www.mongodb.org/">MongoDB</a>しか使ってないぽちです，おはようございます！</p>
+
+<p>Node.js + MongoDBの組み合わせで使うことがほとんどなので，スクリプトからは<a href="http://mongoosejs.com/">mongoose</a>を使うのですが，ちょっとDBの中身を確認したりするのでmongodbのshellを使うことも多いです．</p>
+
+<p>普段mongooseを使っていると，mongodbのshellが貧弱で困ることがあります．</p>
+
+<pre><code>&gt; db.users.findOne({_id:"&lt;存在するObjectId&gt;"})
+null
+</code></pre>
+
+<p>みたいな．</p>
+
+<p>正しくはこう書かねばなりません．
+```</p>
+
+<blockquote><p>db.users.findOne({<em>id:ObjectId("&lt;存在するObjectId>")})
+{
+  "</em>id":ObjectId("&lt;存在するObjectId>")
+  :
+}
+```</p></blockquote>
+
+<p>めんどくさい！<code>ObjectId</code>と毎回タイプするのがめんどくさい！</p>
+
+<pre><code>&gt; db.users.findOneById("&lt;存在するObjectId&gt;")
+</code></pre>
+
+<p>と書ければ楽だなーと思って探したら，</p>
+
+<pre><code>&gt; DBCollection.prototype.findOneById = function(id){return this.findOne({_id:ObjectId(id)});};
+</code></pre>
+
+<p>とかやってあげると
+<code>
+db.users.findOneById("&lt;存在するObjectId&gt;")
+{
+  "_id":ObjectId("&lt;存在するObjectId&gt;")
+  :
+}
+</code>
+楽ちんだ！</p>
+
+<p><code>findOneById</code>とか長い！</p>
+
+<pre><code>&gt; DBCollection.prototype.findOneById = DBCollection.prototype.fbi = function(id){return this.findOne({_id:ObjectId(id)});};
+db.users.fbi("&lt;存在するObjectId&gt;")
+{
+  "_id":ObjectId("&lt;存在するObjectId&gt;")
+  :
+}
+</code></pre>
+
+<p>楽ちんだ！！！！さすがFBI！！！連邦捜査局！！！</p>
+
+<p>はい，でもこれを毎回打つのが超めんどくさい．</p>
+
+<p>そういう時は，<code>~/.mongorc.js</code>を配置しましょう．
+```
+$ echo "DBCollection.prototype.findOneById = DBCollection.prototype.fbi = function(id){return this.findOne({_id:ObjectId(id)});};" > ~/.mongorc.js
+$ mongo hoge</p>
+
+<blockquote><p>db.users.fbi("&lt;存在するObjectId>")
+{
+  "_id":ObjectId("&lt;存在するObjectId>")
+  :
+}
+```</p></blockquote>
+
+<p>楽ちん！</p>
+
+<p>上では<code>findOneById</code>だけですが，どんどん追加できるので，決まったaggregateがあるならパラメータを渡す簡単構文でaggregateしたりmongooseでいう<code>populate</code>的な動作も出来ると思います．</p>
+
+<p><a href="https://github.com/skratchdot/mesh">mesh</a>というmongo shellに色々ライブラリを読み込んでくれるのもあるのですが，欲しいのがなかったので自分で作って公開するといいよ！</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li><code>~/.mongorc.js</code>にmongo shellを拡張するスクリプトを置くと便利！</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

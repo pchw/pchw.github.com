@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: backbone.js | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/backbone-js/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Backbone.jsのイベントをデバッグ出力するやつをモジュール化した]]></title>
+    <link href="http://pchw.github.io/blog/2013/11/11/backbone-event-logger/"/>
+    <updated>2013-11-11T09:10:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/11/11/backbone-event-logger</id>
+    <content type="html"><![CDATA[<p>土日で艦これイベント海域E-4をなんとか突破したぽちです，おはようございます．</p>
+
+<p>今日は島風轟沈の日らしいですね．</p>
+
+<p>ktty1220 さんの<a href="http://qiita.com/ktty1220/items/f1bb5b4eb48839de8394">Backbone.jsで全イベントをconsoleに出力するデバッグ用スクリプト</a></p>
+
+<p>が便利だったので使ってたのですが，
+毎回<code>backbone.debug.js</code>をプロジェクトにコピーして回るのが大変だったので
+bowerでサクッとインストール出来るようにしてみました．</p>
+
+<p><a href="https://github.com/pchw/backbone-event-logger">backbone-event-logger</a></p>
+
+<h3>使い方</h3>
+
+<pre><code>$ bower install backbone-event-logger
+</code></pre>
+
+<p>でインストールされます．</p>
+
+<p>あとは
+```</p>
+
+<script src="http://pchw.github.io/bower_components/backbone/backbone-min.js"></script>
+
+
+<script src="http://pchw.github.io/bower_components/backbone-event-logger/backbone-event-logger.min.js"></script>
+
+
+<pre><code>みたいに読みこめば，ガンガンログが出ます．
+
+### オリジナルとの違い
+
+オリジナルと変更した部分としては
+
+- `Backbone[&lt;ModelとかRouterとか&gt;]::initialize`で自動的にログ出力を有効化
+- デフォルトで`@constructor.name`をログに出すようにした
+- coffee化
+- 名前を`.debug`から`.event-logger`へ（デバッグっていうよりロガーだなと思ったので）
+- AMD/RequireJSでも読み込めるようにしてみた（けど試してない）
+
+
+### こんな感じで出ます
+</code></pre>
+
+<p>23:04:42 Model:ContentModel  remove [> [ContentModel, Contents, Object]
+<code>``
+</code>ContentModel<code>って書いてる部分が</code>@constructor.name`で出してるところ．</p>
+
+<h3>イマイチなところ</h3>
+
+<p>オリジナルにあったスタイルの変更等は<code>bower install</code>した後に
+<code>bower_components</code>内を変更しないといけなくて，悩んでいるところ．
+（自動適用にしたので外部から設定する口を用意してもイマイチかなと）</p>
+
+<p>ところで<code>bower install</code>した時って<code>backbone-event-logger.min.js</code>や<code>backbone-event-logger.js</code>
+以外のファイルは配置されるべきなんだろうか？ルールがわからない．
+（backbone.jsのbowerも配置されてた）</p>
+
+<h3>まとめ</h3>
+
+<ul>
+<li>便利な<a href="http://qiita.com/ktty1220/items/f1bb5b4eb48839de8394">Backbone.jsで全イベントをconsoleに出力するデバッグ用スクリプト</a> をモジュール化した</li>
+<li>自動読み込みや名前の表示などオリジナル版をちょっとカスタムしてる</li>
+<li>PR/forkどうぞ <a href="https://github.com/pchw/backbone-event-logger">backbone-event-logger</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

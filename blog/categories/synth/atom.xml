@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: synth | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/synth/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[Synth] ルーティングを増やしてみる]]></title>
+    <link href="http://pchw.github.io/blog/2014/07/04/synth-routing/"/>
+    <updated>2014-07-04T10:00:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2014/07/04/synth-routing</id>
+    <content type="html"><![CDATA[<h1>前説</h1>
+
+<p><a href="/blog/2014/06/28/synth-with-vuejs/">前回</a>でAngularだけではなく自分の好きなクライアントサイドMVCフレームワークが使えるようになったところで，
+次はサーバサイドでAPIの追加が必要になってくる頃合いなのでその辺りを触ってみる．</p>
+
+<p><a href="http://synthjs.com">synth</a>は初回にも少し触れたが，<code>back/resources</code>以下がURLにマッピングされている感じになっている．
+そのため，<code>back/resources</code>以下にディレクトリを掘って，その中のファイルに<code>exports.XXXXX</code>的なのを書いておけば，
+そのままURLのルーティングに反映される．</p>
+
+<p>実際の手順を追ってみる．</p>
+
+<h1>backend側の改修</h1>
+
+<p><code>back/resources</code> にディレクトリ追加する．
+```
+$ synth install -b bluebird
+$ mkdir back/resources/messages
+$ cat back/resources/messages/filename_you_want.coffee
+Promise = require 'bluebird'
+sample = ->
+  new Promise (resolve)->
+    setTimeout ->
+      resolve 'something'
+    , 3000</p>
+
+<p>exports.getIndex = (req, res)->
+  sample()
+  .then (d)->
+    something: d
+```</p>
+
+<p>synthは<code>back/resources</code>内の<code>.js</code>または<code>.coffee</code>のファイルの<code>exports</code>を見るため，
+ファイル名はなんでもいい，
+分かりやすいのを付けるのがいいらしい．</p>
+
+<p>サーバサイドはPromiseを返さないといけないらしいので，<a href="https://github.com/petkaantonov/bluebird">bluebird</a>を使ってPromiseを返してる．</p>
+
+<h1>プリロードテンプレートの改修</h1>
+
+<p><code>front/html</code>内もbackend側に合わせて変える必要がある．
+（<code>preloadHTML</code>が必要な場合）</p>
+
+<p><code>front/html</code>内は<code>back/resources</code>内と良く似ているが，ディレクトリに入れるファイル名は規則がある．
+<code>exports.getIndex</code>とかだと<code>getIndex.jade</code>または<code>getIndex.html</code>というファイル名にする必要がある．
+backend側のAPIと合わせなければいけない．
+<code>
+$ cat front/html/messages/getIndex.jade
+h2 Messages
+p 
+</code></p>
+
+<h1>frontend側の改修</h1>
+
+<p>今frontend側にはroutingを入れてなかったので，<code>/messages</code>にアクセスしてもVue側でエラーになる．
+<code>v-view</code>と<code>Vue.component</code>を使ってルーティングするロジックを入れる．</p>
+
+<p>まずは<code>index.jade</code>の方に<code>v-view</code>を
+```
+$ cat front/index.jade
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= appName</p>
+
+<pre><code>for cssFile in cssFiles
+  link(rel="stylesheet", href=cssFile)
+
+// Preloaded Data
+script.
+  window.preloadedData = !{data};
+for jsFile in jsFiles
+  script(src=jsFile)
+</code></pre>
+
+<p>  body
+    h1= appName</p>
+
+<pre><code>div#content
+  div(v-view="currentView")
+
+if preloadHTML
+  script.template(type="v-template", id="template")
+    != preloadHTML
+</code></pre>
+
+<pre><code>
+次に`front-app.coffee`の方にURLによって`v-view`の`currentView`をcomponentで置換するように書く．
+</code></pre>
+
+<p>$ cat front/js/front-app.coffee
+$ -></p>
+
+<p>  routes = ['tweets', 'messages']</p>
+
+<p>  getRoute = ->
+    path = location.hash.replace(/^#!\?/, '') or 'tweets'
+    if routes.indexOf(path) > -1 then path else 'tweets'</p>
+
+<p>  Vue.filter "formatDate", (v) ->
+    v.replace /T|Z/g, " "</p>
+
+<p>  Vue.component 'tweets',
+    template: '#template'
+    created: ->
+      @$data.newTweet = "write some tweet."
+      if typeof window.preloadedData isnt "undefined"
+        @$data = window.preloadedData
+        window.preloadedData = null
+      else
+        $.ajax
+          url: "/api/tweets"
+          success: (data) =>
+            @$data.tweets = data?.tweets
+    methods:
+      publish: ->
+        $.ajax
+          type: "POST"
+          url: "/api/tweets"
+          data:
+            content: @$data.newTweet</p>
+
+<pre><code>      dataType: "json"
+      success: (tweet) =&gt;
+        @$data.tweets.unshift tweet
+        @$data.newTweet = ""
+
+Vue.component 'messages',
+  template: '#template'
+  created: -&gt;
+    if typeof window.preloadedData isnt "undefined"
+      @$data = window.preloadedData
+      window.preloadedData = null
+    else
+      $.ajax
+        url: "/api/messages"
+        success: (data) =&gt;
+          @$data.something = data?.something
+</code></pre>
+
+<p>  app = new Vue
+    el: "#content"
+    data:
+      currentView: do getRoute
+      routes: routes
+```</p>
+
+<h1>アクセスしてみる</h1>
+
+<p>http://localhost:5000/messages で <code>something</code>的な文字が出るページが表示されて，
+http://localhost:5000/tweets で今までのTweets一覧が出るページが表示されるようになる</p>
+
+<h1>まとめ</h1>
+
+<ul>
+<li>synthでルーティングを追加してみた</li>
+<li>back/resource以下にディレクトリを増やしてファイルを突っ込むだけ</li>
+<li>後から見た時にURLとディレクトリ構造が一致しているので分かりやすい</li>
+<li>front側もプリロードのテンプレートがfront/html以下に同じディレクトリ構造があるので分かりやすい</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[Synth] SynthとVue.jsを組み合わせてみた]]></title>
+    <link href="http://pchw.github.io/blog/2014/06/28/synth-with-vuejs/"/>
+    <updated>2014-06-28T16:00:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2014/06/28/synth-with-vuejs</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2014/06/27/synth/">前回</a>紹介したAPI-firstなフレームワーク<a href="http://synthjs.com">Synth</a>と<a href="http://vuejs.org">Vue.js</a>を組み合わせて使ってみる．</p>
+
+<p>Synthの<code>$ synth new my_app</code>で生成されるコードは<a href="">Angular.js</a>を使うようになっている．
+Angular.js派ではないのでVue.js版に書き換えてみる．
+ついでに<a href="http://coffeescript.org">coffee-script</a>派なので，coffee-scriptで動くようにする．</p>
+
+<p>ここまでのコードは<a href="/blog/2014/06/27/synth/">前回</a>参照．Synth公式の<a href="http://www.synthjs.com/tutorial/">チュートリアル</a>を済ませた時点のコードです．</p>
+
+<h1>モジュールの準備</h1>
+
+<h2>Vue.jsインストール</h2>
+
+<p>まず，Vue.jsを使うため，インストールする．</p>
+
+<pre><code>$ synth install -f vue
+$ synth install -f jquery
+</code></pre>
+
+<h2>Angularのアンインストール</h2>
+
+<p>Angularは使わないので抜く．<code>$ synth uninstall -f angular</code>とやりたいが，未実装っぽい．
+あと<code>$ synth install -f</code>時に<code>.bower.json</code>に<code>main</code>キーがないと<code>front/js/jsFiles</code>に記載されないっぽい</p>
+
+<pre><code>$ cd front
+$ bower uninstall angular
+$ bower uninstall angular-route
+</code></pre>
+
+<p><code>front/bower.json</code> からも消しておく．
+<code>
+$ cat front/bower.json
+{
+  "name": "my_app",
+  "private": true,
+  "dependencies": {
+    "vue": "~0.10.5",
+    "jquery": "~2.1.1"
+  }
+}
+</code></p>
+
+<p><code>front/js/jsFiles</code>から不要になったファイルを削除する
+<code>
+$ cat front/js/jsFiles
+../bower_components/jquery/dist/jquery.js
+../bower_components/vue/dist/vue.js
+front-app.js
+</code></p>
+
+<h1>テンプレートの修正</h1>
+
+<p>DirectivesをAngular用からVue用に書き換える．
+dateの<code>medium</code>はVueでは無いので後で<code>formatDate</code>を定義することにする．</p>
+
+<pre><code>$ cat front/html/tweets/getIndex.jade
+textarea(v-text="newTweet")
+button(v-on="click: publish()", v-attr="disabled: newTweet.length == 0") Publish
+ul.tweet-timeline
+  li.tweet(v-repeat="tweet : tweets")
+    .content 
+    .date 
+</code></pre>
+
+<p><code>front/index.jade</code> もVue用に色々修正
+```
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= appName</p>
+
+<pre><code>for cssFile in cssFiles
+  link(rel="stylesheet", href=cssFile)
+
+// Preloaded Data
+script.
+  window.preloadedData = !{data};
+for jsFile in jsFiles
+  script(src=jsFile)
+</code></pre>
+
+<p>  body
+    h1= appName</p>
+
+<pre><code>div#content
+
+if preloadHTML
+  script.template(type="v-template", id="template")
+    != preloadHTML
+</code></pre>
+
+<pre><code>
+分からなかった点
+----
+</code></pre>
+
+<p>script(type="text/ng-template", id="#{preloadHTMLPath}")
+<code>``
+とかなっててngRouteの</code>templateUrl`らへんでバインドしてた方法のVue版が分からなかったから普通にid指定にしてしまった．</p>
+
+<h1>Vueのバインディングとcoffee-script化</h1>
+
+<p><code>front/front-app.js</code>を消して<code>front/front-app.coffee</code>にしてVue版にする
+```
+$ ->
+  Vue.filter "formatDate", (v) ->
+    v.replace /T|Z/g, " "</p>
+
+<p>  content = new Vue
+    el: "#content"
+    template: "#template"
+    data:
+      newTweet: "write some tweet."</p>
+
+<pre><code>created: -&gt;
+  if typeof window.preloadedData isnt "undefined"
+    @$data = window.preloadedData
+    window.preloadedData = null
+  else
+    $.ajax
+      url: "/api/tweets"
+      success: (data) =&gt;
+        @$data.tweets = data?.tweets
+
+
+methods:
+  publish: -&gt;
+    $.ajax
+      type: "POST"
+      url: "/api/tweets"
+      data:
+        content: @$data.newTweet
+
+      dataType: "json"
+      success: (tweet) =&gt;
+        @$data.tweets.unshift tweet
+        @$data.newTweet = ""
+</code></pre>
+
+<pre><code>
+合わせて`front/js/jsFiles`も書き換え
+</code></pre>
+
+<p>$ cat front/js/jsFiles
+../bower_components/jquery/dist/jquery.js
+../bower_components/vue/dist/vue.js
+front-app.coffee
+```</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/1183484/3419737/e84b3ec4-fe76-11e3-8d09-132d59ed6c48.png" alt="image" />
+これでめでたくTweetが表示されて，投稿できるようになった．</p>
+
+<h1>まとめ</h1>
+
+<ul>
+<li>synthのAngularで動いてたのをVue版に書き直してみた</li>
+<li>そんなに変更は難しくなかった．これから新しいクライアントサイドのライブラリが出てきてもサッと変えてテスト出来そう．</li>
+<li>よく考えたら当たり前だけどbackend側全然いじってない</li>
+<li>API増やしたり，色々するとまたbackend側のディレクトリ構成とかfrontのhtml以下のディレクトリ構成とかハマるポイントが有るけどそれは次の話にする．</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[Synth] Synthを試してみた]]></title>
+    <link href="http://pchw.github.io/blog/2014/06/27/synth/"/>
+    <updated>2014-06-27T07:00:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2014/06/27/synth</id>
+    <content type="html"><![CDATA[<p><img src="https://cloud.githubusercontent.com/assets/1183484/3405341/2b8563a0-fd7c-11e3-8782-4eb6dbd4a420.png" alt="synth" /></p>
+
+<h1>tl;dr</h1>
+
+<ul>
+<li>SynthっていうAPI-firstなWebフレームワークがある</li>
+<li>Turoialを回してみた</li>
+<li>RESTfullなAPIとディレクトリ構造，exportsのI/Fを合わせる規約で見通し良い</li>
+<li>プリロードの仕組みで初めからレンダリングできるよ！</li>
+<li>まだ超beta．</li>
+</ul>
+
+
+<h1>前説</h1>
+
+<p><a href="http://www.synthjs.com/">Synth</a> はNode.js製のAPI-firstなWebフレームワーク．
+<code>back/resources</code>ディレクトリに.js/.coffeeを配置して，<code>exports.get = ...</code>とか<code>exports.getIndex =</code>とか<code>exports.&lt;method&gt;&lt;optional: ActionName&gt;</code>な形で書いておくと，<code>myapp/back/resources/memoes</code>が<code>GET /api/memoes</code>とかに答えてくれる．</p>
+
+<p>ひとまず，<a href="http://www.synthjs.com/tutorial/">Tutorial</a> を回して，Angular以外を使う道を探ろう．</p>
+
+<p>あと超betaらしいから地雷踏む勇気が無い人はProductionに使えない．</p>
+
+<h1>インストールとセットアップ</h1>
+
+<pre><code>$ npm install -g synth
+$ $ synth new my_app
+Successfully created a new synth app in my_app
+</code></pre>
+
+<h2>ディレクトリ構造</h2>
+
+<pre><code>$ cd my_app
+$ ls
+back       front      synth.json
+$ ls front/
+bower.json css        html       images     index.jade js         misc
+$ ls back/
+back-app.js       generateTweets.js package.json      resources
+</code></pre>
+
+<p>こんな感じになっている．</p>
+
+<p><strong>front</strong>はクライアントサイドのやつが詰まってる．
+<strong>back</strong>はサーバサイドのやつが詰まってる．</p>
+
+<p><code>synth new</code>はTwitterクローンが生成されるみたい．</p>
+
+<h2>パッケージインストール</h2>
+
+<pre><code>$ synth install -b
+$ synth install -f
+</code></pre>
+
+<p>でそれぞれfrontの<code>bower install</code>とbackの<code>npm install</code>が走る．</p>
+
+<h2>起動</h2>
+
+<pre><code>$ synth server -p 5000
+synth (in development mode) is now listening on port 5000
+</code></pre>
+
+<p>http://localhost:5000 にアクセスすると表示される．
+<code>Synth App</code>とか出て何も表示されない．Tweetを生成してあげないといけないらしい．</p>
+
+<pre><code>$ node back/generateTweets.js
+</code></pre>
+
+<p>そしてリロードするとTweetが出た．</p>
+
+<h2>処理の追加</h2>
+
+<p>このままだとただのTweet表示君なので，Tweetする機能を付ける．</p>
+
+<h3>backend側</h3>
+
+<p><code>back/resources/tweets/</code>に<code>.js</code>ファイルを置いて<code>exports.post = ...</code>を書けばいい．
+<code>
+$ touch back/resources/tweets/createTweets.js
+</code></p>
+
+<pre><code>$ cat back/resources/tweets/createTweets.js 
+  exports.post = function(req, res) {
+    if (!req.body.content) {
+      throw 422;
+    }
+    return req.db.collection('tweets').insert({
+      content: req.body.content.slice(0, 140),
+      created_at: new Date
+    });
+  };
+</code></pre>
+
+<p>ちなみに<code>back/resources/tweets/createTweets.coffee</code>を置いたら読んでくれなかった．
+きっと全部<code>.coffee</code>にしないとダメ．とりあえず先に行く．</p>
+
+<h3>frontend側</h3>
+
+<p><code>/front/js/controllers/tweets.js</code> に処理を追記．</p>
+
+<pre><code>$ cat front/js/controllers/tweets.js 
+angular.module('my_app')
+.controller('tweetsController', function ($scope, $http, data) {
+  $scope.tweets = data.tweets;
+  $scope.publish = function () {
+    $http.post('/api/tweets', { content: $scope.newTweet })
+    .success(function (tweet) {
+      $scope.tweets.unshift(tweet);
+    });
+    $scope.newTweet = '';
+  };
+</code></pre>
+
+<p>こうする．</p>
+
+<p>HTMLの方もボタンを付けたり，textareaを付けたりしないといけない．</p>
+
+<pre><code>$ cat front/html/tweets/getIndex.jade
+textarea(ng-model="newTweet")
+button(ng-click="publish()", ng-disabled="newTweet.length == 0") Publish
+ul.tweet-timeline
+  li.tweet(ng-repeat="tweet in tweets")
+    .content 
+    .date 
+</code></pre>
+
+<p>こうする．</p>
+
+<h3>確認</h3>
+
+<p>もう一度 http://localhost:5000 にアクセスすれば，textareaとpublishボタンがある．
+hogeとか書いてpublishすればめでたくTweetが追加される．</p>
+
+<h2>Preload</h2>
+
+<p><a href="http://www.synthjs.com/">Synth</a>の強みとしてプリロードの機能があるらしい．
+backend側でpromiseで返せば，front側で初めからデータを持った状態でレンダリング出来る．
+<a href="https://github.com/rendrjs/rendr">rendr</a> みたいなものか．</p>
+
+<p><code>front/index.jade</code>を確認してみると，</p>
+
+<pre><code>    // Preloaded Data
+    script.
+      var preloadedData = !{data};
+</code></pre>
+
+<p>とか</p>
+
+<pre><code>    if preloadHTML
+      script(type="text/ng-template", id="#{preloadHTMLPath}")
+        != preloadHTML
+</code></pre>
+
+<p>ここらへんがプリロードの鍵らしい．</p>
+
+<p><a href="https://github.com/JonAbrams/synth/blob/7085c027881fbc8dcfba2f539508fb82df0a833d/lib/frontendRenderer.js#L26">ソース</a> を覗いてみると，</p>
+
+<pre><code>    var renderData = {
+      appName: req.appName || 'Synth App',
+      jsFiles: assets.jsFiles,
+      cssFiles: assets.cssFiles,
+      data: prepareData(preload.data),
+      preloadHTML: preload.html,
+      preloadHTMLPath: htmlPath
+    };
+    for (var key in res.renderData) {
+      renderData[key] = res.renderData[key];
+    }
+</code></pre>
+
+<p>がres.renderに渡ってるっぽい．</p>
+
+<pre><code>exports.get = function(req, res) {
+  :
+  res.renderData[hoge] = 'fuga'
+  :
+}
+</code></pre>
+
+<p>とかbackend側でやってあげれば，front側にデータを渡せそう．</p>
+
+<h2>Angular以外で使ってみる</h2>
+
+<p>時間が来たから，また夜にでも続き書く．</p>
+]]></content>
+  </entry>
+  
+</feed>

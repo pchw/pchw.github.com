@@ -1,0 +1,1157 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ぽっちぽちにしてやんよ</title>
+  <meta name="author" content="pchw">
+
+  
+  <meta name="description" content="リリース周期はやい！もう1.8が出てます． $ sudo motion update しましょう！今回は修正が少なめです． = RubyMotion 1.8 = * Fixed a bug in the generation of BridgeSupport files for multiple &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pchw.github.io/blog/page/4/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ぽっちぽちにしてやんよ" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-13219359-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ぽっちぽちにしてやんよ</a></h1>
+  
+    <h2>技術ネタとかアプリに関する話とか</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pchw.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/30/18/">RubyMotion 1.8 リリースされてますね</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-30T20:52:00+00:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>リリース周期はやい！もう1.8が出てます．</p>
+
+<pre><code>$ sudo motion update 
+</code></pre>
+
+<p>しましょう！今回は修正が少なめです．</p>
+
+<pre><code>= RubyMotion 1.8 =
+
+  * Fixed a bug in the generation of BridgeSupport files for multiple headers
+    directories.
+  * When building vendored projects, unset environment variables that could
+    potentially make the build to fail.
+    https://github.com/HipByte/motion-cocoapods/issues/12
+</code></pre>
+
+<ul>
+<li>複数のヘッダディレクトリを指定したときのBridgeSupportファイル生成のとこのバグ修正</li>
+<li>ベンダープロジェクトをビルドするときに環境変数CCが設定されてない時にビルド失敗する問題の修正．</li>
+</ul>
+
+
+<p>いつも誰かがRubyMotionの新しいバージョン出たって言ってるの見てアップデートしてるのが分かるんだけど，言ってる人はどうやって新しいバージョンが出たって知るんだろう？毎日<code>motion update</code>とかしてるのかな．</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/29/dottouch/">[レビュー] DotTouchというiPhone/iPadアプリを使ってみたよ！</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-29T21:44:00+00:00" pubdate data-updated="true">May 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今日はDotTouchというドット絵を描くiPhoneアプリの紹介です．</p>
+
+<div class="sticky-itslink" style="margin-bottom:1em;"><a href="http://itunes.apple.com/jp/app/dottouch/id333614008?mt=8&uo=4" rel="nofollow" target="_blank"><img src="http://a3.mzstatic.com/us/r1000/110/Purple/v4/84/9b/d8/849bd8e5-ba16-f769-9efa-28b23bdc56a9/mza_2802615915717116417.100x100-75.png" style="border-style:none;float:left;margin-right:5px;" alt="DotTouch" title="DotTouch" /></a><div class="sticky-itslinktext" style="float:left;"><a href="http://itunes.apple.com/jp/app/dottouch/id333614008?mt=8&uo=4" rel="nofollow" target="_blank">DotTouch</a><br />STUDIO SHIN<br />ジャンル： ユーティリティ - エンターテインメント<br />リリース日： 2009-10-15<br />価格： 350円<br /> <a href="http://itunes.apple.com/jp/app/dottouch/id333614008?mt=8&uo=4" rel="nofollow" target="_blank"><img src="http://ax.phobos.apple.com.edgesuite.net/ja_jp/images/web/linkmaker/badge_appstore-sm.gif" alt ="iTunesで見る" style="border-style:none;" /></a><br /><span style="font-size:xx-small;">posted with <a href="http://sticky.linclip.com/rank/" target="_blank">sticky</a> on 2012.5.29</span></div><br style="clear:left;" /></div>
+
+
+<p></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/05/29/dottouch/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/29/17/">RubyMotion 1.7出てます</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-29T08:14:00+00:00" pubdate data-updated="true">May 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>RubyMotion 1.7が出てました．</p>
+
+<pre><code>$ sudo motion update
+</code></pre>
+
+<p>しましょう！</p>
+
+<p>ところで，RubyMotion がアップデートされたかどうかを素早く知る方法ってないんですかね．</p>
+
+<pre><code>= RubyMotion 1.7 =
+
+  * Fixed a bug in the compiler where the proper signature would not be used
+    when defining informal protocol methods with CF types as arguments.
+  * Fixed iOS constants to be looked up at demand (when being used) and not
+    when the app starts, because certain constants are not set until a certain
+    API is called (ex: the kAB... constants of the AddressBook framework).
+    This change should also speed up a little bit the app starting time.
+  * Fixed a bug in the compiler where very long selectors would be truncated
+    and causing exceptions later at runtime.
+  * Fixed a bug in the compiler where memory-related selectors (alloc, dealloc,
+    retain, release, etc.) could not be defined in Ruby.
+  * Fixed a bug in the compiler where NSObject instance methods could not be
+    called on classes (ex. MyClass.performSelector(...)).
+  * Fixed a bug in the build system where vendored 3rd-party APIs dealing with
+    types defined in iOS headers could not be used (ex: enums or structs).
+</code></pre>
+
+<ul>
+<li>非公式プロトコルでCFタイプを引数にとった時に正しいシグネチャを吐かないことの修正</li>
+<li>アプリ開始時のiOS定数発見の部分を修正．この影響でアプリ開始時間がちょっと早くなる．</li>
+<li>超長いセレクタが途中で切れて実行時エラーになる問題の修正</li>
+<li>メモリ関係（allocとかreleaseとか）がRubyで定義出来なかったのを修正．</li>
+<li>NSObjectのインスタンスメソッドをクラスから呼べなかった問題を修正</li>
+<li>外部ベンダのライブラリを読み込むやつでiOSヘッダに定義されたenumとかstructsが使われなかった問題を修正</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/28/routable/">[RubyMotion]Routableを使ってみた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-28T12:32:00+00:00" pubdate data-updated="true">May 28<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Routableというgemがあるみたいという話を聞いて，使ってみました．</p>
+
+<p><a href="https://github.com/clayallsopp/Routable">Routable - GitHub</a></p>
+
+<h2>インストール</h2>
+
+<pre><code>gem install routable
+</code></pre>
+
+<h2>Rakefileの編集</h2>
+
+<pre><code>$:.unshift("/Library/RubyMotion/lib")
+require 'motion/project'
+require 'routable'
+</code></pre>
+
+<p>のように<code>require 'routable'</code>を追加します．</p>
+
+<h2>使い方</h2>
+
+<pre><code>class AppDelegate
+  def application(application, didFinishLaunchingWithOptions:launchOptions)
+    @window = UIWindow.alloc.initWithFrame UIScreen.mainScreen.applicationFrame
+    @window.makeKeyAndVisible
+
+    @rootView = NSBundle.mainBundle.loadNibNamed(
+        'RootViewController',
+        owner: self,
+        options: nil).first
+
+    @router = Routable::Router.router
+    @router.navigation_controller = UINavigationController.alloc.init
+    @router.navigation_controller.pushViewController(@rootView, animated: false)
+    @rootView.title = "TOP"
+
+    @router.map("one", OneViewController)
+    @router.map("two/:param", TwoViewController)
+
+    @window.rootViewController = @router.navigation_controller
+
+    @one = @rootView.view.viewWithTag 1
+    @one.addTarget(
+        self, 
+        action: 'onClickOne:', 
+        forControlEvents: UIControlEventTouchUpInside)
+
+    @two = @rootView.view.viewWithTag 2
+    @two.addTarget(
+        self, 
+        action: 'onClickTwo:', 
+        forControlEvents: UIControlEventTouchUpInside)
+
+    true
+  end
+
+  def onClickOne(sender)
+    @router.open('one', true)
+  end
+
+  def onClickTwo(sender)
+    @router.open('two/100', true)
+  end
+end
+</code></pre>
+
+<p>こんな感じで使います．</p>
+
+<p><code>Routable::Router.router</code>を取得して，<code>navigation_controller</code>に<code>UINavigationController</code>を設定しておきます．</p>
+
+<p><code>map(&lt;URL&gt;, &lt;viewController&gt;)</code>のようにすると，そのURL文字列をキーにviewControllerの遷移を書けるようになります．</p>
+
+<p><URL>には<code>hoge/:id</code>のようにパラメータを記述することができて，この場合だと<code>hoge/1</code>とかいう遷移をさせれば，宛先のviewControllerに<code>1</code>というパラメータが渡されます．</p>
+
+<p>遷移する時は<code>open(&lt;URL&gt;, &lt;animation?&gt;)</code>とすれば設定したviewControllerへ遷移出来ます．</p>
+
+<h2>遷移先ViewController</h2>
+
+<pre><code>class TwoViewController &lt; UIViewController
+    attr_accessor :param
+
+    def initWithParams(params = {})
+        init()
+        self.param = params[:param]
+        self
+    end
+
+    def viewDidLoad
+        @label = UILabel.alloc.init
+        @label.bounds = [[50, 150],[300, 50]]
+        @label.text = "TwoViewController" + self.param.to_s
+    end
+end
+</code></pre>
+
+<p>のようにして，<code>initWithParams</code>で引数を受け取れます．</p>
+
+<h2>問題点</h2>
+
+<p>ViewControllerをコードで場所設定とかすごくめんどくさいので，僕はIBを使います．</p>
+
+<p>しかし，IBを使って<code>resouces/HogeViewController.xib</code>を作って，Controlを配置して，，，というフローを辿ってやると，<code>router.open</code>の時にエラーが出ます．</p>
+
+<p>routerの内部では，<code>HogeViewController.alloc.initWithParams()</code>を呼んでインスタンス化しているわけですが，
+xibを使うと，<code>NSBundle.mainBundle.loadNibNamed</code>をしないとダメっぽいんですね．</p>
+
+<p>なので，routerをいじって，mapするときにそれ用の情報を入れてあげるかしないといけません．</p>
+
+<h2>まとめ</h2>
+
+<p>僕はStoryboardを使うと思います．</p>
+
+<p>XCodeが嫌でRubyMotionをやっている人は多いと思うので，コードでControlを配置するのが苦じゃない人にとってはrouterはいいソリューションなんじゃないでしょうか．</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/27/live/">[RubyMotion]motion-liveを使ってみよう</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-27T11:17:00+00:00" pubdate data-updated="true">May 27<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>RubyMotionは<code>rake</code>でBuildしてSimulatorが立ち上がります．</p>
+
+<p>その後，Terminalはインタラクティブシェルになっていて，そこで行った操作がそのままSimulatorの方に反映されます．</p>
+
+<p>ところが，そのインタラクティブシェルは1行しか打てなくて，そこで色々やろうとすると苦しいものがあります．</p>
+
+<p>そこで登場するのが<strong>motion-live</strong>です．</p>
+
+<p><a href="https://github.com/irrationalfab/motion-live">motion-live</a></p>
+
+<p>これを導入すると，<code>LiveScratchpad.rb</code>というファイルを編集してセーブしたタイミングでインタラクティブシェルに引き渡されて実行されます．</p>
+
+<h2>使い方</h2>
+
+<p>まず，motion-liveをインストールします．</p>
+
+<pre><code>$ gem install motion-live
+Fetching: colored-1.2.gem (100%)
+Fetching: rb-fsevent-0.9.1.gem (100%)
+Fetching: motion-live-0.1.gem (100%)
+Successfully installed colored-1.2
+Successfully installed rb-fsevent-0.9.1
+Successfully installed motion-live-0.1
+3 gems installed
+Installing ri documentation for colored-1.2...
+Installing ri documentation for rb-fsevent-0.9.1...
+Installing ri documentation for motion-live-0.1...
+Installing RDoc documentation for colored-1.2...
+Installing RDoc documentation for rb-fsevent-0.9.1...
+Installing RDoc documentation for motion-live-0.1...
+</code></pre>
+
+<p>その後，プロジェクトのRakefileを編集します．
+（既存の<code>motion crate</code>したのがないなら，<code>motion create &lt;hoge&gt;</code>しましょう）</p>
+
+<pre><code>$ more Rakefile
+$:.unshift("/Library/RubyMotion/lib")
+require 'motion/project'
+require 'motion-live'
+
+Motion::Project::App.setup do |app|
+  # Use `rake config' to see complete project settings.
+  app.name = 'hoge'
+end
+</code></pre>
+
+<p>変更点は<code>require 'motion-live'</code>を追加しただけです．</p>
+
+<p>あとは，実行します．</p>
+
+<pre><code>$ rake live
+</code></pre>
+
+<p>するとSimulatorが立ち上がり，ディレクトリに<code>LiveScratchpad.rb</code>が出来上がるので，編集保存するとインタラクティブシェルで実行されます．</p>
+
+<h2>利点</h2>
+
+<p>motion-liveを使った時の利点です．</p>
+
+<h3>複数行のコードをインタラクティブシェルに読ませれる</h3>
+
+<p>これによって，何回も使う処理をclassとかmethodにして使うとかいうのも簡単にかけます．</p>
+
+<h3>自分の好きなエディタが使える</h3>
+
+<p>インタラクティブシェルではTerminalの上で書くので，補完も効かなければ，キーバインディングも違って色々不便です．</p>
+
+<p>しかし，motion-liveを使うと，<code>LiveScratchpad.rb</code>というファイルを編集出来ればいいのです．</p>
+
+<p>つまり，EmacsやVimも使えますし，補完を効かせれるTextMateやRedcarを使うことも出来ます．
+<a href="http://pchw.github.com/blog/2012/05/27/st2/">前の記事</a>で書いたようにSublime Text2も補完を効かせれるようになったので，僕はSublime Text2を使ってます．</p>
+
+<pre><code>app = UIApplication.sharedApplication
+delegate = app.delegate
+repl(delegate)
+@window
+</code></pre>
+
+<p>みたいなのを書く時でも，すごい楽なわけです．</p>
+
+<p>セットアップも有効にするのもRakefileに1行追加ですし，簡単で積極的に使って行きたいですね！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/27/st2/">Sublime Text 2でRubyMotionの補完が出来るようになったぞおおおお</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-27T10:04:00+00:00" pubdate data-updated="true">May 27<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/st2.png" alt="catch" /></p>
+
+<p>ついに来ました！</p>
+
+<p>いままで，RubyMotionを書いていて補完が効くのはVimとredcarとTextMateだけでした！
+ところが，RubyMotionのフォーラムに「[RubyMotion] Sublime Text 2 Support」という質問が投げかけられ，ついに今日そのパッケージが登場しました！</p>
+
+<p><a href="https://github.com/diemer/RubyMotionSublimeCompletions">RubyMotionSublimeCompletions</a></p>
+
+<p>インストール方法は簡単で，</p>
+
+<pre><code>$ cd ~/Library/Application Support/Sublime Text 2/Packages
+$ git clone git://github.com/diemer/RubyMotionSublimeCompletions.git
+</code></pre>
+
+<p>してSublime Text2を再起動すればOKです．</p>
+
+<p>PackageControlを導入している人なら，</p>
+
+<pre><code>Cmd+Shift+p
+Package Control: Add Repository
+https://github.com/diemer/RubyMotionSublimeCompletions
+Package Control: Install Package
+RubyMotionSublimeCompletions
+</code></pre>
+
+<p>でインストール出来るはずです．</p>
+
+<p>後は，普通にエディタを起動して<code>UIApp</code>とか打てば，補完に<code>UIApplication</code>とか<code>UIAppearance</code>とか出るようになります！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/26/appreviews/">AppReviewViewerが良い！</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-26T22:52:00+00:00" pubdate data-updated="true">May 26<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今日は「第２回 iphone_dev_jp 東京iPhone/Mac勉強会」に参加してきました．</p>
+
+<p>そこで面白いものが紹介されていて，超便利だったので紹介します．</p>
+
+<p><img src="/images/appreviews.png" alt="appreviews" /></p>
+
+<p>mixiのiOSアプリ開発という発表をなさっていた@k_kinukawaさんがAppReviewViewerというツールを紹介されていました．</p>
+
+<p><a href="https://github.com/punchdrunker/AppReviewViewer">AppReviewViewer</a></p>
+
+<p>これは，アプリのIDを登録すると，レビューページをスクレイピングしてどのバージョンでどんな評価が付いたかを一覧したり見やすく表示してくれるものです．</p>
+
+<p>また，mecabが入っているとレビュー文を形態素解析してくれて頻出名詞をタグクラウドみたいに見せてくれたりします．</p>
+
+<p><strong>Gemfileが追加されたので，Gemfileを自分で追加する必要はなくなりました！</strong></p>
+
+<p>上記の<a href="https://github.com/punchdrunker/AppReviewViewer">github</a>ページに行ってもらうと分かりますが，依存ライブラリが書いてあるんですが，Gemfileが無くてめんどくさいので書きました．</p>
+
+<div><script src='https://gist.github.com/2793067.js?file=Gemfile'></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>AppReviewViewerをGithubからcloneした後に入れちゃってください．</p>
+
+<pre><code>$ git clone git://github.com/punchdrunker/AppReviewViewer.git
+$ cd AppReviewViewer
+$ cat &gt; Gemfile
+(上記gistを入れる)
+$ bundle install
+$ ruby app.rb
+</code></pre>
+
+<p>こんな感じでやれば，AppReviewViewerが<code>http://localhost:4567</code>に起動します．</p>
+
+<p>左端に<code>+Add app</code>があるので，選択してアプリのIDと名前を入れます．</p>
+
+<p><img src="/images/appreviewsadd.png" alt="appreviewsadd" /></p>
+
+<p>ちなみにアプリのIDはAppStoreのアプリのページを開くと，</p>
+
+<p><img src="/images/appreviewsid.png" alt="id" /></p>
+
+<p>ココらへんに書いていたりします．</p>
+
+<p>アプリのIDと名前が入れられたら，</p>
+
+<pre><code>$ ruby scripts/fetch.rb
+</code></pre>
+
+<p>とすれば，スクレイピングが始まるので，終わったら</p>
+
+<pre><code>$ ruby app.rb
+</code></pre>
+
+<p>としてまた<code>http://localhost:4567</code>を開いてみましょう．Reviewが見えるはずです！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/23/update/">RubyMotionが1.4->1.5->1.6とアップデートしたよ！</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-23T01:03:00+00:00" pubdate data-updated="true">May 23<span>rd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>気づいたら，RubyMotionの更新が1.5・1.6と続いてありました．</p>
+
+<pre><code>$ sudo motion update
+</code></pre>
+
+<p>しましょう．</p>
+
+<h2>RubyMotion 1.5 更新内容</h2>
+
+<pre><code>= RubyMotion 1.5 =
+
+  * Improved the REPL to support multi-line expressions.
+  * Fixed a bug when compiling Core Data model files where the `momc' utility
+    was not given absolute paths.
+  * Removed legacy MacRuby code that was using the private `isaForAutonotifying'
+    selector and causing a warning during an App Store submission.
+  * Fixed a bug in Enumerable#sort_by that would lead to a crash.
+  * Fixed a bug in the REPL where it would not detect the iOS Simulator window
+    if certain windows were in front or created later.
+  * Fixed a bug in the build system where framework dependencies would not be
+    properly handled.
+  * Added support for .lproj directories (i18n). Thanks Aaron Hurley.
+  * Fixed a bug where objects from pure Ruby classes sent to KVO would not be
+    properly handled later (because KVO inserts a new singleton class).
+  * Fixed attr_writer to emit KVO notifications (will/didChangeValueForKey).
+</code></pre>
+
+<ul>
+<li>REPLが複数行をサポート</li>
+<li>CoreDataモデルファイルをコンパイル時のバグを修正</li>
+<li>レガシーなMacRubyコードを撤去した．</li>
+<li>Enumerable#sort_byがクラッシュを引き起こす問題を修正</li>
+<li>ウィンドウがシミュレータウィンドウの前に複数あるなどの原因でREPLがシミュレータを見つけれないバグを修正</li>
+<li>ビルド時にフレームワークの依存関係を正しく扱えなかったバグを修正</li>
+<li>.lprojディレクトリをサポート</li>
+<li>pure RubyのクラスのオブジェクトをKVOに送った時に正しくハンドリング出来なかったバグを修正</li>
+<li>attr_writerがKVO notificationを上げるように修正</li>
+</ul>
+
+
+<h2>RubyMotion 1.6 更新内容</h2>
+
+<pre><code>= RubyMotion 1.6 =
+
+  * Fixed a regression in the build system introduced by the previous update
+    (when compiling .xib files).
+  * Fixed the vendoring system to include all source code files. Merged patch
+    from https://groups.google.com/d/msg/rubymotion/tPCxSMCA2f4/w2DIHFo2AVAJ
+  * Fixed the REPL to not crash if you give it an empty expression.
+</code></pre>
+
+<ul>
+<li>ビルド時の再発バグの修正</li>
+<li>外部ライブラリ読み込み不具合修正</li>
+<li>REPLに空を渡した時にクラッシュする不具合の修正</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/22/gcd/">RubyMotionでGCDを使う</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-22T22:35:00+00:00" pubdate data-updated="true">May 22<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://lh6.googleusercontent.com/-nEOFLDxo0SE/T7cKmnkUM3I/AAAAAAAAAac/F_9TagXzXTE/s300/gcd.png" alt="GCD" /></p>
+
+<p>今日はRubyMotionでGCD(Grand Central Dispatch)を使う話です．</p>
+
+<h2>GCD とは</h2>
+
+<p>GCDというのは，</p>
+
+<blockquote><p>非常に効率的なシステム機能と使い勝手のよいプログラミングモデルを併用して，マルチプロセッサを最大限に活用するために必要なコードを徹底的に簡素化</p></blockquote>
+
+<p>するものらしいです
+（AppleのGrand Central Dispatchの説明より）</p>
+
+<p>UITableViewとかそういうのはMainThreadでちょっと重い処理をすると，すぐにパフォーマンスが悪くなってなんだこのアプリ糞だな！とか言われるので，そういう時には別Threadを立ててMainThreadの処理を邪魔しないように処理を行う必要があります．
+それを楽にしてくれるのがGCD．</p>
+
+<h2>Objective-C</h2>
+
+<p>Obj-Cのコードだと，</p>
+
+<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_async(queue, ^{
+    // 処理
+});
+</code></pre>
+
+<p>こんな感じになります．</p>
+
+<h2>RubyMotion</h2>
+
+<p>RubyMotionでは，GCD関連は<code>Dispatch</code>クラスを使います．</p>
+
+<p><a href="http://www.rubymotion.com/developer-center/guides/runtime/#_grand_central_dispatch">RubyMotion Runtime Guid</a> にも書いてます．</p>
+
+<p>上で書いたObj-CのコードをRubyMotionで書きなおすと，</p>
+
+<pre><code>Dispatch::Queue.concurrent.async{
+    # 処理
+}
+</code></pre>
+
+<p>こうなります．超簡単．</p>
+
+<h2>UIの更新に関して</h2>
+
+<p>さて，実際にはConcurrent Dispatch Queueで時間のかかる処理を行い，
+処理を行った結果をUIに反映させることがよくあります．
+その場合に直接UIへ値を代入とかすると落ちます．
+UIはMainThreadから更新しなければなりません．
+その場合は，</p>
+
+<pre><code>Dispatch::Queue.concurrent.async{
+    # 処理
+    Dispatch::Queue.main.async{
+        #UI更新
+    }
+}
+</code></pre>
+
+<p>このように<code>Dispatch::Queue.main</code>でMain Dispatch Queueに更新処理を入れることで実現できます．</p>
+
+<h2>実戦</h2>
+
+<p>実際に少し書いてみます．</p>
+
+<pre><code>$ motion create gcd
+$ cd gcd
+</code></pre>
+
+<h3>app/app_delegate.rb</h3>
+
+<pre><code>class AppDelegate
+  def application(application, didFinishLaunchingWithOptions:launchOptions)
+    @window = UIWindow.alloc.initWithFrame UIScreen.mainScreen.bounds
+    @window.rootViewController = NSBundle.mainBundle.loadNibNamed(
+        'RootViewController', 
+        owner: self,
+        options: nil).first
+    @window.rootViewController.wantsFullScreenLayout = true
+    @window.makeKeyAndVisible
+    true
+  end
+end
+</code></pre>
+
+<h3>InterfaceBuilder</h3>
+
+<p><code>resouces/RootViewController.xib</code> という形でUIButton(Tag 2)，UILabel(Tag 1)を追加しておいて下さい．
+（参考：<a href="http://pochixpochi.blogspot.jp/2012/05/rubymotion-interfacebuilder.html">[RUBYMOTION] INTERFACEBUILDERと合わせて使って楽をしよう</a>）</p>
+
+<h3>app/root_view_controller.rb</h3>
+
+<pre><code>class RootViewController &lt; UIViewController
+    def viewDidLoad
+        @label = view.viewWithTag 1
+        @button = view.viewWithTag 2
+        @button.addTarget(
+            self,
+            action: 'onClicked:',
+            forControlEvents:UIControlEventTouchUpInside)
+    end
+
+    def onClicked(sender)
+        p "onClicked"
+
+        Dispatch::Queue.concurrent.async {
+            NSThread.sleepForTimeInterval 5
+            Dispatch::Queue.main.async {
+                @label.text = ["hoge", "fuga", "moge"].sample
+            }
+        }
+    end
+end
+</code></pre>
+
+<h3>実行</h3>
+
+<pre><code>$ rake
+</code></pre>
+
+<p>シミュレータが立ち上がり，Buttonを押すとLabelの文字列がちょっと待ったあとに変わります．
+連打すると次々変わると思います．
+その間Buttonが押せないとかそういうことが起こらないのが分かると思います．</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/22/storyboard/">Storyboardを使ってRubyMotionで開発する方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-22T21:53:00+00:00" pubdate data-updated="true">May 22<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://lh6.googleusercontent.com/-ptxn4wJhqOc/T69nu2xHtLI/AAAAAAAAAYY/JKxXu3OAsYE/B6AD8776-C7D5-4F4A-A9AA-A8143868D413.jpg" alt="" /></p>
+
+<p>RubyMotionでもStoryBoardが使えるらしいので，試してみた．</p>
+
+<h1>ひな形作成</h1>
+
+<pre><code>$ motion create SB
+$ cd SB
+</code></pre>
+
+<h1>XcodeでStoryboardを作成</h1>
+
+<p>おもむろにXCodeを開きます．</p>
+
+<p><code>File&gt;New&gt;File</code>で<code>iOS&gt;User Interface&gt;Storyboard</code>を選びます．
+<img src="https://lh4.googleusercontent.com/-mLcH1PENo2w/T69nyXr7yTI/AAAAAAAAAY4/RT_Q6EIAjIY/6335FCDB-E334-486F-9A97-C62A4212F9CE.jpg" alt="" /></p>
+
+<h2>初めに表示されるViewControllerを作成</h2>
+
+<p>UIViewController設置．
+<img src="https://lh4.googleusercontent.com/-A3bJEOrvzrE/T69n2eaXo3I/AAAAAAAAAZM/gMeA45JyTv4/C59A9802-25A6-4A66-B8B7-F247989BD60B.jpg" alt="" /></p>
+
+<p>Identifierを<code>First</code>とか付けます．
+<img src="https://lh6.googleusercontent.com/-m0viQeqlxi8/T69nv3v32qI/AAAAAAAAAYg/RR6q5pe4rRg/655CD9E6-3C77-4930-95CD-D71E1CCEAFD1.jpg" alt="" /></p>
+
+<p>UILabelとUIButtonを追加します．</p>
+
+<h2>Segueで遷移する先のViewControllerを作成</h2>
+
+<p>もう一つUIViewController設置．
+<img src="https://lh5.googleusercontent.com/-pzw1VqoabCw/T69n3leryQI/AAAAAAAAAZY/wpds7icQfMk/3D867F91-1A11-442A-9E71-EE5F0475A81C.jpg" alt="" /></p>
+
+<p>Identifierを<code>Second</code>とか付けときます．</p>
+
+<h2>Segueの設定</h2>
+
+<p><code>First</code>に配置したButtonを，Ctrlを押しながら引っ張って<code>Second</code>のViewControllerへ繋ぎます．
+Storyboard Seguesの設定が出るので，<code>Modal</code>とかを選ぶ．
+<img src="https://lh3.googleusercontent.com/-XX9-8SPsWAg/T69n1E6_nlI/AAAAAAAAAZI/R9xnsie7vnE/26CE3AAA-C5FE-4209-9C35-AF20533C15B3.jpg" alt="" /></p>
+
+<p><img src="https://lh5.googleusercontent.com/-7zTj7o1d3dQ/T69nwxc2G2I/AAAAAAAAAYk/eEjmStwoOlA/78C994F8-EFE6-4643-93FD-1D8F1EBB5050.jpg" alt="" /></p>
+
+<h2>Storyboardの保存</h2>
+
+<p><code>Cmd+s</code>でStoryboardを<code>resources/Storyboard.storyboard</code>とか名前を付けて保存します．</p>
+
+<h1>storyboardのコンパイル</h1>
+
+<pre><code>$ ibtool --compile resources/Storyboard.storyboardc resources/Storyboard.storyboard
+</code></pre>
+
+<h1>コーディング</h1>
+
+<p><code>app/app_delegate.rb</code>を書く．
+Storyboardからロードします．</p>
+
+<pre><code>class AppDelegate
+  def application(application, didFinishLaunchingWithOptions:launchOptions)
+    @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
+    @sb = UIStoryboard.storyboardWithName('Storyboard', bundle: nil)
+    rvc = @sb.instantiateViewControllerWithIdentifier("First")
+    @window.rootViewController = rvc
+    @window.rootViewController.wantsFullScreenLayout = true
+    @window.makeKeyAndVisible
+    true
+  end
+end
+</code></pre>
+
+<p>ちなみに，Buttonの動作を変えたい場合などは，<code>First</code>と付けたUIViewControllerをCustom Classに変更してUIViewControllerを継承したクラスを作成して，<code>prepareForSegue:sender:</code>で遷移前に処理を行うとか，UIButtonの<code>addTarget:sender</code>とかにselectorを登録して処理を行うとかします．</p>
+
+<h1>コンパイルして実行</h1>
+
+<pre><code>  $rake
+</code></pre>
+
+<p>とすれば，Simulatorが立ち上がります．
+設置したButtonを押せばSecondのViewへ切り替わります．</p>
+
+<p><img src="https://lh4.googleusercontent.com/-XyNt1C6cfKo/T69nxjkqNrI/AAAAAAAAAYs/V4i7HQ9rDV8/8619164C-B90D-4D8F-913F-ED11086D700A.jpg" alt="" /></p>
+
+<p><img src="https://lh5.googleusercontent.com/-4ugWozivZrg/T69nziIvs3I/AAAAAAAAAZA/HYZfkyB-WEQ/22854A71-7125-43CF-802C-7630629537F5.jpg" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/5/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/3/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p><img src="/images/pMac.png"/></p>
+  <p>ぽち</p>
+  <p>iPhoneアプリとかWebサービスとか作ってます．</p>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pchw", 0, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pchw" class="twitter-follow-button" data-show-count="false">Follow @pchw</a>
+  
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/voicetext/">VoiceText Web APIのNode.jsライブラリ作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/04/synth-routing/">[Synth] ルーティングを増やしてみる</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/28/synth-with-vuejs/">[Synth] SynthとVue.jsを組み合わせてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/synth/">[Synth] Synthを試してみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/11/power-assert/">coffee-scriptでpower-assertを使ったテストを書く</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/app'>App (1)</a></li><li><a href='/blog/categories/appstore'>AppStore (1)</a></li><li><a href='/blog/categories/backbone-js'>backbone.js (1)</a></li><li><a href='/blog/categories/backbone-js'>Backbone.js (1)</a></li><li><a href='/blog/categories/github'>github (1)</a></li><li><a href='/blog/categories/github'>GitHub (1)</a></li><li><a href='/blog/categories/hub'>hub (1)</a></li><li><a href='/blog/categories/ios7'>iOS7 (1)</a></li><li><a href='/blog/categories/iphone'>iPhone (1)</a></li><li><a href='/blog/categories/jquery'>jquery (1)</a></li><li><a href='/blog/categories/mongodb'>mongodb (1)</a></li><li><a href='/blog/categories/octopress'>octopress (1)</a></li><li><a href='/blog/categories/power-assert'>power-assert (1)</a></li><li><a href='/blog/categories/rubymotion'>RubyMotion (27)</a></li><li><a href='/blog/categories/sublimetext2'>SublimeText2 (2)</a></li><li><a href='/blog/categories/synth'>synth (3)</a></li><li><a href='/blog/categories/voicetext'>voicetext (1)</a></li><li><a href='/blog/categories/vue-js'>Vue.js (2)</a></li></ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - pchw -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pchw';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

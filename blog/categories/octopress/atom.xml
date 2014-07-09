@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[OctopressとTravis CIを連携させてBlog生成を自動にする]]></title>
+    <link href="http://pchw.github.io/blog/2013/06/27/octopress-travis/"/>
+    <updated>2013-06-27T10:00:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/06/27/octopress-travis</id>
+    <content type="html"><![CDATA[<h1>Octopressってめんどくさいよね</h1>
+
+<p>Octopressはmarkdownでブログ書けて，見た目も良い感じで導入した当初はすげーテンションがあがって記事を書きまくってたのですが，<code>rake generete</code>とかするのが超めんどくさい．さらにちゃんとセットアップしてるマシンでやらないとrubyのバージョン違いでなんかエラー出たりして超めんどくさいので，最近記事かくのがおっくうでした．</p>
+
+<p>そこで，Travis CIとOctopressをforkしてるリポジトリを連携させることでそういう煩わしさを減らしてブログを書けることが判明しました！色々ハマりどころがあって1日ぐらいかかったので解説記事を書くよ！</p>
+
+<p>ちなみに，TravisCIと連携させてgenerateするようにしておけば，<a href="http://prose.io/">Prose.io</a>（github連携のWebエディタ）を使ったりするとOctopressでgenerate出来ない環境とかでもブログが書ける！
+<a href="https://itunes.apple.com/jp/app/gitmongo/id593450102">GitMongo</a>使ったりすれば，iPad/iPhoneからOctopressでブログが書ける！</p>
+
+<p>というわけで手順解説です．</p>
+
+<h1>OctopressとTravisを連携させる</h1>
+
+<p>今回の構成はこんな感じ
+<img src="/images/octopress-travis.png" alt="octopress-travis" /></p>
+
+<p>作業は全部↑で言うOctopress(forked)に対して行います．</p>
+
+<p>下に書く<code>.travis.yml</code>のREPOで指定している所が配置するリポジトリです．（上図のGitHub Pagesと書いてるところ）</p>
+
+<p>まず，Travis CIと連携するための<code>.travis.yml</code>をプロジェクトのrootに置きます．</p>
+
+<h2>.travis.yml</h2>
+
+<pre><code>---
+language: ruby
+rvm:
+- 1.9.3
+before_script:
+- git config --global user.name "ユーザ名(via TravisCI)"
+- git config --global user.email "メールアドレス"
+- git remote set-url origin $REPO.git
+- if [ -z "$id_rsa_{1..32}" ]; then echo 'No $id_rsa_{1..32} found !' ; exit 1; fi
+- echo -n $id_rsa_{1..32} &gt;&gt; ~/.ssh/travis_rsa_64
+- base64 --decode --ignore-garbage ~/.ssh/travis_rsa_64 &gt; ~/.ssh/id_rsa
+- chmod 600 ~/.ssh/id_rsa
+- echo -e "Host github.com\n\tStrictHostKeyChecking no\n" &gt;&gt; ~/.ssh/config
+- rake setup_github_pages[$REPO]
+script:
+- rake generate
+after_script:
+- rake deploy
+env:
+  global:
+  - REPO="git@github.com:ユーザ名/GitHubページを配置するリポジトリ.git"
+</code></pre>
+
+<h2>Travis CI用の鍵作成</h2>
+
+<pre><code># 鍵生成
+# passphraseは空で．
+ssh-keygen -t rsa -C "&lt;メールアドレス&gt;" -f ~/.ssh/travis_rsa
+
+# クリップボードに公開鍵をコピー
+cat ~/.ssh/travis_rsa.pub | pbcopy
+
+
+# SSH鍵設定ページを開いてAdd SSH keyする
+open  https://github.com/&lt;GitHubアカウント名&gt;/&lt;Octopress用リポジトリ名&gt;/settings/keys
+</code></pre>
+
+<p>ブラウザが開くので，Add SSH Keyボタンを押して追加します．</p>
+
+<pre><code># 元からOS Xに入っているbase64コマンドだと --wrap=0オプションが使えないのでbase64コマンドをインストール
+brew install base64
+
+# 鍵をbase64化
+# brewのバージョンなどによってinstallされるPathは異なることがある
+/usr/local/Cellar/base64/1.5/bin/base64 --wrap=0 ~/.ssh/travis_rsa &gt; ~/.ssh/travis_rsa_64
+
+
+# travisコマンドをインストール
+brew install travis
+
+# travis encryptが100文字までしか受け付けないので，100文字ごとにtravis encryptに渡す
+--addで.travis.ymlに自動追記してくれる
+bash &lt;(cat ~/.ssh/travis_rsa_64 | perl -pe 's/(.{100})/$1\n/g' | nl | perl -pe 's/\s*(\d+)\s*(.*)/travis encrypt -r &lt;GitHubアカウント名&gt;\/&lt;Octopress用リポジトリ名&gt; id_rsa_$1="$2" --add env.global/')
+
+# id_rsa_Xが何個あるかをカウント
+cat ~/.ssh/travis_rsa_64 | perl -pe 's/(.{100})/$1\n/g' | nl | tail
+</code></pre>
+
+<h2>.travis.ymlの書き換え</h2>
+
+<p><code>$id_rsa_{1..32}</code> みたいに書いている場所は↑の<code>id_rsa_Xが何個あるかをカウント</code>の部分でカウントした数にします．</p>
+
+<p>僕の場合は<code>32</code>でした．</p>
+
+<h2>リポジトリにpushする</h2>
+
+<p><code>$ git push remote source</code></p>
+
+<h2>Travis CI側の設定</h2>
+
+<p><a href="https://travis-ci.org/profile">https://travis-ci.org/profile</a> からリポジトリの所をonにする．</p>
+
+<p>https://github.com/ユーザ名/リポジトリ名/settings/hooks#travis_minibucket
+からtravisのhookが設定されているので，TestHookを押す．</p>
+
+<p><a href="https://travis-ci.org/">https://travis-ci.org/</a>にアクセスするとなんかビルドが始まって勝手に更新される！</p>
+
+<h1>ハマりどころ</h1>
+
+<h2>Enter passphrase for key '/home/travis/.ssh/id_rsa': とか出やがって止まる</h2>
+
+<ol>
+<li>travis encryptに指定するユーザ名，リポジトリ名をミスってる</li>
+<li>id_rsa_Xの番号をミスってる（ちゃんとid_rsaXの数分Secureの行数分指定しているか）</li>
+<li>鍵生成でミスってる（passpraseをemptyに）</li>
+</ol>
+
+
+<h2>base64コマンドがbase64: unrecognized option `--wrap=0'とか吐く</h2>
+
+<p><code>brew install base64</code>して入ったbase64で実行する．
+<code>/usr/bin/base64</code> を使うと<code>--wrap</code>オプションが無い．</p>
+
+<h1>参考資料</h1>
+
+<ul>
+<li><a href="http://www.harimenon.com/blog/2013/01/27/auto-deploying-to-my-octopress-blog/">Auto-deploying to My Octopress Blog With Travis-CI</a></li>
+<li><a href="http://darvin.github.io/2013/01/13/Prose_Octopress_TravisIO/">Prose.io + Octopress + Travis-CI + GitHub Pages = ♥</a></li>
+<li><a href="https://gist.github.com/lukewpatterson/4242707">https://gist.github.com/lukewpatterson/4242707</a></li>
+<li><a href="https://gist.github.com/douglasduteil/5525750">https://gist.github.com/douglasduteil/5525750</a></li>
+<li><a href="https://gist.github.com/wakefield/5519563">https://gist.github.com/wakefield/5519563</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

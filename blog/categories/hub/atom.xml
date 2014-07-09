@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: hub | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/hub/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[hubでpull-requestした後に自動でgithub上のPullRequestをブラウザで開く方法]]></title>
+    <link href="http://pchw.github.io/blog/2013/07/12/hub/"/>
+    <updated>2013-07-12T18:50:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/07/12/hub</id>
+    <content type="html"><![CDATA[<p>GitHubを使って開発していると，PullRequestをブラウザでぽちぽちやるのは凄くダルいです．特に<a href="http://scottchacon.com/2011/08/31/github-flow.html">Github Flow</a> だとぽこぽこPullRequest投げまくるので毎回ブラウザ開いてPullRequest投げるのが凄くダルい．</p>
+
+<p>そこでコマンドラインからPullRequestを送れる<a href="http://defunkt.io/hub/">hub</a> を使います．</p>
+
+<p><code>hub</code>コマンドは便利なんだけど，<code>hub pull-request</code>するとデフォルトでPullRequestされたGitHubのPullRequestのURL（<code>https://github.com/pchw/fontawesome/pull/1</code> みたいなの）をTerminalに出力するだけです．</p>
+
+<p>チームでやってると，PullRequest送ったあとにちょっとコメントしたりするのがあったりして，いちいちTerminalからコピペしてブラウザに貼り付けるのがダルいです．</p>
+
+<p>そこでhubにPullRequest後に勝手にブラウザで今作ったGitHubのPullRequestのURLを開くオプションを追加しようとちょっとPullRequestを<a href="https://github.com/github/hub/pull/344">送ってみたら</a>
+<code>
+open `git pull-request`
+</code>
+ってやればいいじゃんって教えてもらいました．</p>
+
+<p>便利だからみんな使うといいと思うよ．</p>
+]]></content>
+  </entry>
+  
+</feed>

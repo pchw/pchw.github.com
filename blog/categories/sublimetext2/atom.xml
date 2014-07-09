@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SublimeText2 | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/sublimetext2/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sublime Text2で1行が80文字以内かわかりやすくする方法]]></title>
+    <link href="http://pchw.github.io/blog/2013/07/12/sublimetext2/"/>
+    <updated>2013-07-12T07:20:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/07/12/sublimetext2</id>
+    <content type="html"><![CDATA[<p>別に80文字以上でもいいじゃんとか思っていたんですが，
+GitHubでレビューする時に文字数が多いと横スクロールしにくくてやりにくいので．</p>
+
+<p>Preferences > Settings - User を開いて（または<code>Cmd+,</code>）
+<code>
+"rulers":
+  [
+    80,
+    120
+  ],
+</code>
+を追加して保存すれば80行目と120行目に線が表示されるようになります．</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Sublime Text 2でRubyMotionの補完が出来るようになったぞおおおお]]></title>
+    <link href="http://pchw.github.io/blog/2012/05/27/st2/"/>
+    <updated>2012-05-27T10:04:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2012/05/27/st2</id>
+    <content type="html"><![CDATA[<p><img src="/images/st2.png" alt="catch" /></p>
+
+<p>ついに来ました！</p>
+
+<p>いままで，RubyMotionを書いていて補完が効くのはVimとredcarとTextMateだけでした！
+ところが，RubyMotionのフォーラムに「[RubyMotion] Sublime Text 2 Support」という質問が投げかけられ，ついに今日そのパッケージが登場しました！</p>
+
+<p><a href="https://github.com/diemer/RubyMotionSublimeCompletions">RubyMotionSublimeCompletions</a></p>
+
+<p>インストール方法は簡単で，</p>
+
+<pre><code>$ cd ~/Library/Application Support/Sublime Text 2/Packages
+$ git clone git://github.com/diemer/RubyMotionSublimeCompletions.git
+</code></pre>
+
+<p>してSublime Text2を再起動すればOKです．</p>
+
+<p>PackageControlを導入している人なら，</p>
+
+<pre><code>Cmd+Shift+p
+Package Control: Add Repository
+https://github.com/diemer/RubyMotionSublimeCompletions
+Package Control: Install Package
+RubyMotionSublimeCompletions
+</code></pre>
+
+<p>でインストール出来るはずです．</p>
+
+<p>後は，普通にエディタを起動して<code>UIApp</code>とか打てば，補完に<code>UIApplication</code>とか<code>UIAppearance</code>とか出るようになります！</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>MongoDBのShellを使いやすくする方法 - ぽっちぽちにしてやんよ</title>
+  <meta name="author" content="pchw">
+
+  
+  <meta name="description" content="最近DBはMongoDBしか使ってないぽちです，おはようございます！ Node.js + MongoDBの組み合わせで使うことがほとんどなので，スクリプトからはmongooseを使うのですが，ちょっとDBの中身を確認したりするのでmongodbのshellを使うことも多いです． &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pchw.github.io/blog/2013/11/12/mongodb-shell/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ぽっちぽちにしてやんよ" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-13219359-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ぽっちぽちにしてやんよ</a></h1>
+  
+    <h2>技術ネタとかアプリに関する話とか</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pchw.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">MongoDBのShellを使いやすくする方法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-12T07:49:00+00:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>最近DBは<a href="http://www.mongodb.org/">MongoDB</a>しか使ってないぽちです，おはようございます！</p>
+
+<p>Node.js + MongoDBの組み合わせで使うことがほとんどなので，スクリプトからは<a href="http://mongoosejs.com/">mongoose</a>を使うのですが，ちょっとDBの中身を確認したりするのでmongodbのshellを使うことも多いです．</p>
+
+<p>普段mongooseを使っていると，mongodbのshellが貧弱で困ることがあります．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; db.users.findOne({_id:"&lt;存在するObjectId&gt;"})
+</span><span class='line'>null</span></code></pre></td></tr></table></div></figure>
+
+
+<p>みたいな．</p>
+
+<p>正しくはこう書かねばなりません．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; db.users.findOne({_id:ObjectId("&lt;存在するObjectId&gt;")})
+</span><span class='line'>{
+</span><span class='line'>  "_id":ObjectId("&lt;存在するObjectId&gt;")
+</span><span class='line'>  :
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>めんどくさい！<code>ObjectId</code>と毎回タイプするのがめんどくさい！</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; db.users.findOneById("&lt;存在するObjectId&gt;")</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と書ければ楽だなーと思って探したら，</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; DBCollection.prototype.findOneById = function(id){return this.findOne({_id:ObjectId(id)});};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とかやってあげると</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db.users.findOneById("&lt;存在するObjectId&gt;")
+</span><span class='line'>{
+</span><span class='line'>  "_id":ObjectId("&lt;存在するObjectId&gt;")
+</span><span class='line'>  :
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>楽ちんだ！</p>
+
+<p><code>findOneById</code>とか長い！</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; DBCollection.prototype.findOneById = DBCollection.prototype.fbi = function(id){return this.findOne({_id:ObjectId(id)});};
+</span><span class='line'>db.users.fbi("&lt;存在するObjectId&gt;")
+</span><span class='line'>{
+</span><span class='line'>  "_id":ObjectId("&lt;存在するObjectId&gt;")
+</span><span class='line'>  :
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>楽ちんだ！！！！さすがFBI！！！連邦捜査局！！！</p>
+
+<p>はい，でもこれを毎回打つのが超めんどくさい．</p>
+
+<p>そういう時は，<code>~/.mongorc.js</code>を配置しましょう．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ echo "DBCollection.prototype.findOneById = DBCollection.prototype.fbi = function(id){return this.findOne({_id:ObjectId(id)});};" &gt; ~/.mongorc.js
+</span><span class='line'>$ mongo hoge
+</span><span class='line'>&gt; db.users.fbi("&lt;存在するObjectId&gt;")
+</span><span class='line'>{
+</span><span class='line'>  "_id":ObjectId("&lt;存在するObjectId&gt;")
+</span><span class='line'>  :
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>楽ちん！</p>
+
+<p>上では<code>findOneById</code>だけですが，どんどん追加できるので，決まったaggregateがあるならパラメータを渡す簡単構文でaggregateしたりmongooseでいう<code>populate</code>的な動作も出来ると思います．</p>
+
+<p><a href="https://github.com/skratchdot/mesh">mesh</a>というmongo shellに色々ライブラリを読み込んでくれるのもあるのですが，欲しいのがなかったので自分で作って公開するといいよ！</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li><code>~/.mongorc.js</code>にmongo shellを拡張するスクリプトを置くと便利！</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">pchw</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-12T07:49:00+00:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/mongodb/'>mongodb</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://pchw.github.io/blog/2013/11/12/mongodb-shell/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pchw.github.io/blog/2013/11/12/mongodb-shell/" data-via="pchw" data-counturl="http://pchw.github.io/blog/2013/11/12/mongodb-shell/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/11/11/backbone-event-logger/" title="Previous Post: Backbone.jsのイベントをデバッグ出力するやつをモジュール化した">&laquo; Backbone.jsのイベントをデバッグ出力するやつをモジュール化した</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/11/22/github-two-factor-auth/" title="Next Post: Githubの二段階認証を設定しよう">Githubの二段階認証を設定しよう &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p><img src="/images/pMac.png"/></p>
+  <p>ぽち</p>
+  <p>iPhoneアプリとかWebサービスとか作ってます．</p>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pchw", 0, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pchw" class="twitter-follow-button" data-show-count="false">Follow @pchw</a>
+  
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/voicetext/">VoiceText Web APIのNode.jsライブラリ作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/04/synth-routing/">[Synth] ルーティングを増やしてみる</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/28/synth-with-vuejs/">[Synth] SynthとVue.jsを組み合わせてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/synth/">[Synth] Synthを試してみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/11/power-assert/">coffee-scriptでpower-assertを使ったテストを書く</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/app'>App (1)</a></li><li><a href='/blog/categories/appstore'>AppStore (1)</a></li><li><a href='/blog/categories/backbone-js'>backbone.js (1)</a></li><li><a href='/blog/categories/backbone-js'>Backbone.js (1)</a></li><li><a href='/blog/categories/github'>github (1)</a></li><li><a href='/blog/categories/github'>GitHub (1)</a></li><li><a href='/blog/categories/hub'>hub (1)</a></li><li><a href='/blog/categories/ios7'>iOS7 (1)</a></li><li><a href='/blog/categories/iphone'>iPhone (1)</a></li><li><a href='/blog/categories/jquery'>jquery (1)</a></li><li><a href='/blog/categories/mongodb'>mongodb (1)</a></li><li><a href='/blog/categories/octopress'>octopress (1)</a></li><li><a href='/blog/categories/power-assert'>power-assert (1)</a></li><li><a href='/blog/categories/rubymotion'>RubyMotion (27)</a></li><li><a href='/blog/categories/sublimetext2'>SublimeText2 (2)</a></li><li><a href='/blog/categories/synth'>synth (3)</a></li><li><a href='/blog/categories/voicetext'>voicetext (1)</a></li><li><a href='/blog/categories/vue-js'>Vue.js (2)</a></li></ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - pchw -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pchw';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pchw.github.io/blog/2013/11/12/mongodb-shell/';
+        var disqus_url = 'http://pchw.github.io/blog/2013/11/12/mongodb-shell/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

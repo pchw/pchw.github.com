@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: iPhone | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/iphone/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOS7のパララックス効果で左右に動く壁紙を自作する]]></title>
+    <link href="http://pchw.github.io/blog/2013/09/21/pararaxwallpaper/"/>
+    <updated>2013-09-21T01:20:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2013/09/21/pararaxwallpaper</id>
+    <content type="html"><![CDATA[<p>iPhone 5s/5cを買うのを諦めたぽちです，こんばんは！</p>
+
+<p>そんなわけでとっととiPhone4SにiOS7をいれて使ってます．</p>
+
+<p>今まで使ってた壁紙が使えなくなって悲しみの極みですが，
+嘆いていても仕方がないので，新しく作るしかないです．</p>
+
+<p>iOS7からは左右に振ると壁紙が左右にキモい動きをする機能が入ってるっぽいです．
+検索したらキモい動きを切る方法ばっかり出てきたので，作り方を書いておくです．</p>
+
+<p>実は超カンタンで，
+<code>
+iPad 2 and iPad mini: 1,424 x 1,424
+iPad 3 and iPad 4: 2,448 x 2,448
+iPhone 4S: 1,360 x 1,040
+iPhone 5: 1,536 x 1,040
+</code>
+のサイズで作ればいいだけでした．</p>
+
+<p>この機能の呼び名がパララックス効果壁紙（parallax effect wallpapers）とか
+ダイナミック壁紙（dynamic wallpapers）とか色々言われてるっぽいですけど，どれが一般的な呼び名なんでしょうね．</p>
+]]></content>
+  </entry>
+  
+</feed>

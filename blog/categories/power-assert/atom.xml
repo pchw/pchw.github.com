@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: power-assert | ぽっちぽちにしてやんよ]]></title>
+  <link href="http://pchw.github.io/blog/categories/power-assert/atom.xml" rel="self"/>
+  <link href="http://pchw.github.io/"/>
+  <updated>2014-07-09T23:33:55+00:00</updated>
+  <id>http://pchw.github.io/</id>
+  <author>
+    <name><![CDATA[pchw]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[coffee-scriptでpower-assertを使ったテストを書く]]></title>
+    <link href="http://pchw.github.io/blog/2014/06/11/power-assert/"/>
+    <updated>2014-06-11T00:20:00+00:00</updated>
+    <id>http://pchw.github.io/blog/2014/06/11/power-assert</id>
+    <content type="html"><![CDATA[<h2>tl;dr</h2>
+
+<ol>
+<li>@t_wadaさん神</li>
+<li>coffee-scriptで<a href="https://github.com/twada/power-assert">power-assert</a>使うときは<a href="https://github.com/twada/espower-coffee">espower-coffee</a>を使おう</li>
+</ol>
+
+
+<h2>あらすじ</h2>
+
+<p>ちょっと前に話題になっていた<a href="https://github.com/twada/power-assert">power-assert</a>を使ってみようとしました．</p>
+
+<p>こんな感じのを用意しました．</p>
+
+<pre><code>assert = require 'power-assert'
+
+describe 'array', -&gt;
+  beforeEach -&gt;
+    @arr = [1,2,3]
+  describe '#indexOf()', -&gt;
+    it 'should return index when the value is present', -&gt;
+      zero = 0
+      two = 2
+      assert(@arr.indexOf(zero) is two)
+</code></pre>
+
+<p>んで
+<code>
+$ mocha --require intelli-espower-loader test/power-assert.coffee
+</code>
+みたいに実行したら
+```
+  array
+    #indexOf()
+      1) should return index when the value is present</p>
+
+<p>  0 passing (4ms)
+  1 failing</p>
+
+<p>  1) array #indexOf() should return index when the value is present:
+     AssertionError: false == true
+<code>
+あれ，，，ログがショボい，，，
+</code>
+  array
+    #indexOf()
+      1) should return index when the value is present</p>
+
+<p>  0 passing (10ms)
+  1 failing</p>
+
+<p>  1) array #indexOf() should return index when the value is present:
+     AssertionError: # /Users/pochi/Documents/development/(snip)/test/power-assert.js:16</p>
+
+<p>assert(this.arr.indexOf(zero) === two)
+            |   |       |     |   | <br/>
+            |   |       |     |   2 <br/>
+            |   -1      0     false <br/>
+            [1,2,3]</p>
+
+<p>[number] two
+=> 2
+[number] this.arr.indexOf(zero)
+=> -1</p>
+
+<p>```
+こんな感じのを期待したのに！！</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>power-assert使ってみたのに思ったように出力でない．「AssertionError: false == true」って出てしまった</p>&mdash; ぽち＠ (@pchw) <a href="https://twitter.com/pchw/statuses/475911097069744130">June 9, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>とか言ってたら<a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a>が色々助言をくれて，こうなって</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> intelli-espower-loaderへのpull request案件な気がしてきましたね。 <a href="https://t.co/F5tHM0NDqh">https://t.co/F5tHM0NDqh</a></p>&mdash; Yosuke FURUKAWA (@yosuke_furukawa) <a href="https://twitter.com/yosuke_furukawa/statuses/475914266860482560">June 9, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>さらに中をみていくと</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>いや待てよこれ*.coffeeにしてもならないぞ，，，espower-loaderの中の方まで見ていかないと</p>&mdash; ぽち＠ (@pchw) <a href="https://twitter.com/pchw/statuses/475914928562266112">June 9, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>さらに色々調べてたら数カ月前の@mizchiの発言が</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>昨日power-asset 使おうとしてみたけど coffeeと espower が上手く動かんかった</p>&mdash; 俺は平気だよ (@mizchi) <a href="https://twitter.com/mizchi/statuses/468274394368708608">May 19, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>という感じで動作しない感じでした．</p>
+
+<p>TypeScriptでの前例があるように</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> なるほど。。vvakameさんがtypescriptでどうやってやってんだろーと思って中身見たらgrunt-espower使ってたのでそういうことですね。 <a href="https://t.co/mFYljl9QRw">https://t.co/mFYljl9QRw</a></p>&mdash; Yosuke FURUKAWA (@yosuke_furukawa) <a href="https://twitter.com/yosuke_furukawa/statuses/475915916807376896">June 9, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>のようにgruntを使ってjsにコンパイルしてそれを食わせるという方法しか無いように思えた時に @t_wada 降臨．</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> <a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a> 反応遅れてすみません。 CoffeeScript で power-assert 使いたい人意外といらっしゃるみたいですね……Node のローダーではちょっと向かい風ですが、手を考えます <a href="https://t.co/P1WY2nV1fz">https://t.co/P1WY2nV1fz</a></p>&mdash; Takuto Wada (@t_wada) <a href="https://twitter.com/t_wada/statuses/475935334874636288">June 9, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>そしてその翌日</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/pchw">@pchw</a> <a href="https://twitter.com/yosuke_furukawa">@yosuke_furukawa</a> espower-coffee を作ってみたので試してみてください <a href="https://t.co/U8NM7Eji9k">https://t.co/U8NM7Eji9k</a></p>&mdash; Takuto Wada (@t_wada) <a href="https://twitter.com/t_wada/statuses/476235243221835776">June 10, 2014</a></blockquote>
+
+
+<script async src="http://pchw.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p><a href="https://github.com/twada/espower-coffee">espower-coffee</a> が公開されてました！</p>
+
+<h2>使い方</h2>
+
+<pre><code>$ npm install espower-coffee --save-dev
+$ mocha --require 'espower-coffee/guess' test/**/*.coffee
+</code></pre>
+
+<p><code>grunt-mocha-test</code>を使っているなら
+<code>
+mochaTest:
+    options:
+      reporter: 'spec'
+      require: 'espower-coffee/guess'
+      colors: true
+      timeout: 10000
+    src: [
+      'test/power-assert.coffee'
+      ]
+</code>
+こんな感じ．<code>compilers: 'coffee:coffee-script'</code>は要らないみたいです．</p>
+
+<p>すると
+```
+  array
+    #indexOf()
+      1) should return index when the value is present</p>
+
+<p>  0 passing (10ms)
+  1 failing</p>
+
+<p>  1) array #indexOf() should return index when the value is present:
+     AssertionError: # /Users/pochi/Documents/development/(snip)/test/power-assert.coffee:15</p>
+
+<p>assert(this.arr.indexOf(zero) === two)
+            |   |       |     |   | <br/>
+            |   |       |     |   2 <br/>
+            |   -1      0     false <br/>
+            [1,2,3]</p>
+
+<p>[number] two
+=> 2
+[number] this.arr.indexOf(zero)
+=> -1
+```
+こんなのが得られて，coffee-scriptでpower-assertが使えました！</p>
+
+<p>ちなみに他のファイルとかは<a href="https://gist.github.com/pchw/3fbed13bd69fb31faca6">こんな感じ</a>でやりました．</p>
+
+<h2>注意点</h2>
+
+<ul>
+<li>coffee-scriptは1.7.1以上を要求します</li>
+<li>coffee-errorsなどを併用するとショボいログに戻ります</li>
+<li>AssertionErrorの行数が実際の.coffeeの行数ではありません．（多段SourceMap対応するまでは仕様とのこと）</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

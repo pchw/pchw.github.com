@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>[Synth] Synthを試してみた - ぽっちぽちにしてやんよ</title>
+  <meta name="author" content="pchw">
+
+  
+  <meta name="description" content="tl;dr SynthっていうAPI-firstなWebフレームワークがある
+Turoialを回してみた
+RESTfullなAPIとディレクトリ構造，exportsのI/Fを合わせる規約で見通し良い
+プリロードの仕組みで初めからレンダリングできるよ！
+まだ超beta． 前説 Synth &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pchw.github.io/blog/2014/06/27/synth/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ぽっちぽちにしてやんよ" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-13219359-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ぽっちぽちにしてやんよ</a></h1>
+  
+    <h2>技術ネタとかアプリに関する話とか</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pchw.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">[Synth] Synthを試してみた</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T07:00:00+00:00" pubdate data-updated="true">Jun 27<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="https://cloud.githubusercontent.com/assets/1183484/3405341/2b8563a0-fd7c-11e3-8782-4eb6dbd4a420.png" alt="synth" /></p>
+
+<h1>tl;dr</h1>
+
+<ul>
+<li>SynthっていうAPI-firstなWebフレームワークがある</li>
+<li>Turoialを回してみた</li>
+<li>RESTfullなAPIとディレクトリ構造，exportsのI/Fを合わせる規約で見通し良い</li>
+<li>プリロードの仕組みで初めからレンダリングできるよ！</li>
+<li>まだ超beta．</li>
+</ul>
+
+
+<h1>前説</h1>
+
+<p><a href="http://www.synthjs.com/">Synth</a> はNode.js製のAPI-firstなWebフレームワーク．
+<code>back/resources</code>ディレクトリに.js/.coffeeを配置して，<code>exports.get = ...</code>とか<code>exports.getIndex =</code>とか<code>exports.&lt;method&gt;&lt;optional: ActionName&gt;</code>な形で書いておくと，<code>myapp/back/resources/memoes</code>が<code>GET /api/memoes</code>とかに答えてくれる．</p>
+
+<p>ひとまず，<a href="http://www.synthjs.com/tutorial/">Tutorial</a> を回して，Angular以外を使う道を探ろう．</p>
+
+<p>あと超betaらしいから地雷踏む勇気が無い人はProductionに使えない．</p>
+
+<h1>インストールとセットアップ</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install -g synth
+</span><span class='line'>$ $ synth new my_app
+</span><span class='line'>Successfully created a new synth app in my_app</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ディレクトリ構造</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd my_app
+</span><span class='line'>$ ls
+</span><span class='line'>back       front      synth.json
+</span><span class='line'>$ ls front/
+</span><span class='line'>bower.json css        html       images     index.jade js         misc
+</span><span class='line'>$ ls back/
+</span><span class='line'>back-app.js       generateTweets.js package.json      resources</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんな感じになっている．</p>
+
+<p><strong>front</strong>はクライアントサイドのやつが詰まってる．
+<strong>back</strong>はサーバサイドのやつが詰まってる．</p>
+
+<p><code>synth new</code>はTwitterクローンが生成されるみたい．</p>
+
+<h2>パッケージインストール</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ synth install -b
+</span><span class='line'>$ synth install -f</span></code></pre></td></tr></table></div></figure>
+
+
+<p>でそれぞれfrontの<code>bower install</code>とbackの<code>npm install</code>が走る．</p>
+
+<h2>起動</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ synth server -p 5000
+</span><span class='line'>synth (in development mode) is now listening on port 5000</span></code></pre></td></tr></table></div></figure>
+
+
+<p>http://localhost:5000 にアクセスすると表示される．
+<code>Synth App</code>とか出て何も表示されない．Tweetを生成してあげないといけないらしい．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ node back/generateTweets.js</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そしてリロードするとTweetが出た．</p>
+
+<h2>処理の追加</h2>
+
+<p>このままだとただのTweet表示君なので，Tweetする機能を付ける．</p>
+
+<h3>backend側</h3>
+
+<p><code>back/resources/tweets/</code>に<code>.js</code>ファイルを置いて<code>exports.post = ...</code>を書けばいい．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch back/resources/tweets/createTweets.js</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cat back/resources/tweets/createTweets.js 
+</span><span class='line'>  exports.post = function(req, res) {
+</span><span class='line'>    if (!req.body.content) {
+</span><span class='line'>      throw 422;
+</span><span class='line'>    }
+</span><span class='line'>    return req.db.collection('tweets').insert({
+</span><span class='line'>      content: req.body.content.slice(0, 140),
+</span><span class='line'>      created_at: new Date
+</span><span class='line'>    });
+</span><span class='line'>  };</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちなみに<code>back/resources/tweets/createTweets.coffee</code>を置いたら読んでくれなかった．
+きっと全部<code>.coffee</code>にしないとダメ．とりあえず先に行く．</p>
+
+<h3>frontend側</h3>
+
+<p><code>/front/js/controllers/tweets.js</code> に処理を追記．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cat front/js/controllers/tweets.js 
+</span><span class='line'>angular.module('my_app')
+</span><span class='line'>.controller('tweetsController', function ($scope, $http, data) {
+</span><span class='line'>  $scope.tweets = data.tweets;
+</span><span class='line'>  $scope.publish = function () {
+</span><span class='line'>    $http.post('/api/tweets', { content: $scope.newTweet })
+</span><span class='line'>    .success(function (tweet) {
+</span><span class='line'>      $scope.tweets.unshift(tweet);
+</span><span class='line'>    });
+</span><span class='line'>    $scope.newTweet = '';
+</span><span class='line'>  };</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうする．</p>
+
+<p>HTMLの方もボタンを付けたり，textareaを付けたりしないといけない．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cat front/html/tweets/getIndex.jade
+</span><span class='line'>textarea(ng-model="newTweet")
+</span><span class='line'>button(ng-click="publish()", ng-disabled="newTweet.length == 0") Publish
+</span><span class='line'>ul.tweet-timeline
+</span><span class='line'>  li.tweet(ng-repeat="tweet in tweets")
+</span><span class='line'>    .content 
+</span><span class='line'>    .date </span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうする．</p>
+
+<h3>確認</h3>
+
+<p>もう一度 http://localhost:5000 にアクセスすれば，textareaとpublishボタンがある．
+hogeとか書いてpublishすればめでたくTweetが追加される．</p>
+
+<h2>Preload</h2>
+
+<p><a href="http://www.synthjs.com/">Synth</a>の強みとしてプリロードの機能があるらしい．
+backend側でpromiseで返せば，front側で初めからデータを持った状態でレンダリング出来る．
+<a href="https://github.com/rendrjs/rendr">rendr</a> みたいなものか．</p>
+
+<p><code>front/index.jade</code>を確認してみると，</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// Preloaded Data
+</span><span class='line'>script.
+</span><span class='line'>  var preloadedData = !{data};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とか</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if preloadHTML
+</span><span class='line'>  script(type="text/ng-template", id="#{preloadHTMLPath}")
+</span><span class='line'>    != preloadHTML</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここらへんがプリロードの鍵らしい．</p>
+
+<p><a href="https://github.com/JonAbrams/synth/blob/7085c027881fbc8dcfba2f539508fb82df0a833d/lib/frontendRenderer.js#L26">ソース</a> を覗いてみると，</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var renderData = {
+</span><span class='line'>  appName: req.appName || 'Synth App',
+</span><span class='line'>  jsFiles: assets.jsFiles,
+</span><span class='line'>  cssFiles: assets.cssFiles,
+</span><span class='line'>  data: prepareData(preload.data),
+</span><span class='line'>  preloadHTML: preload.html,
+</span><span class='line'>  preloadHTMLPath: htmlPath
+</span><span class='line'>};
+</span><span class='line'>for (var key in res.renderData) {
+</span><span class='line'>  renderData[key] = res.renderData[key];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>がres.renderに渡ってるっぽい．</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>exports.get = function(req, res) {
+</span><span class='line'>  :
+</span><span class='line'>  res.renderData[hoge] = 'fuga'
+</span><span class='line'>  :
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とかbackend側でやってあげれば，front側にデータを渡せそう．</p>
+
+<h2>Angular以外で使ってみる</h2>
+
+<p>時間が来たから，また夜にでも続き書く．</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">pchw</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T07:00:00+00:00" pubdate data-updated="true">Jun 27<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/synth/'>synth</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://pchw.github.io/blog/2014/06/27/synth/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pchw.github.io/blog/2014/06/27/synth/" data-via="pchw" data-counturl="http://pchw.github.io/blog/2014/06/27/synth/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/06/11/power-assert/" title="Previous Post: coffee-scriptでpower-assertを使ったテストを書く">&laquo; coffee-scriptでpower-assertを使ったテストを書く</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/28/synth-with-vuejs/" title="Next Post: [Synth] SynthとVue.jsを組み合わせてみた">[Synth] SynthとVue.jsを組み合わせてみた &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p><img src="/images/pMac.png"/></p>
+  <p>ぽち</p>
+  <p>iPhoneアプリとかWebサービスとか作ってます．</p>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pchw", 0, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pchw" class="twitter-follow-button" data-show-count="false">Follow @pchw</a>
+  
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/voicetext/">VoiceText Web APIのNode.jsライブラリ作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/04/synth-routing/">[Synth] ルーティングを増やしてみる</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/28/synth-with-vuejs/">[Synth] SynthとVue.jsを組み合わせてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/synth/">[Synth] Synthを試してみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/11/power-assert/">coffee-scriptでpower-assertを使ったテストを書く</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/app'>App (1)</a></li><li><a href='/blog/categories/appstore'>AppStore (1)</a></li><li><a href='/blog/categories/backbone-js'>backbone.js (1)</a></li><li><a href='/blog/categories/backbone-js'>Backbone.js (1)</a></li><li><a href='/blog/categories/github'>github (1)</a></li><li><a href='/blog/categories/github'>GitHub (1)</a></li><li><a href='/blog/categories/hub'>hub (1)</a></li><li><a href='/blog/categories/ios7'>iOS7 (1)</a></li><li><a href='/blog/categories/iphone'>iPhone (1)</a></li><li><a href='/blog/categories/jquery'>jquery (1)</a></li><li><a href='/blog/categories/mongodb'>mongodb (1)</a></li><li><a href='/blog/categories/octopress'>octopress (1)</a></li><li><a href='/blog/categories/power-assert'>power-assert (1)</a></li><li><a href='/blog/categories/rubymotion'>RubyMotion (27)</a></li><li><a href='/blog/categories/sublimetext2'>SublimeText2 (2)</a></li><li><a href='/blog/categories/synth'>synth (3)</a></li><li><a href='/blog/categories/voicetext'>voicetext (1)</a></li><li><a href='/blog/categories/vue-js'>Vue.js (2)</a></li></ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - pchw -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pchw';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pchw.github.io/blog/2014/06/27/synth/';
+        var disqus_url = 'http://pchw.github.io/blog/2014/06/27/synth/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
